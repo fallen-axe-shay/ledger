@@ -1,11 +1,28 @@
+:root {
+    --main-bg-color: rgb(236, 236, 236);
+    --title-color: rgb(59, 59, 59);
+    --text-color: rgb(51, 51, 51);
+    --text-color-inverted: white;
+    --header-bg-color: black;
+    --header-text-color: white;
+    --footer-bg-color: black;
+    --footer-text-color: white;
+    --field-box-shadow: 2px 2px 1px rgb(206 206 206);
+}
+
+html {
+    height: 100%;
+}
+
 body {
     font-family: sans-serif;
-    background-image: url('../images/background.png');
+    background-color: var(--main-bg-color);
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
     margin: 0px;
+    height: 100%;
 }
 
 body * {
@@ -13,9 +30,8 @@ body * {
 }
 
 #header {
-    color: white;
-    background-color: rgba(27, 27, 27, 0.836);
-    backdrop-filter: blur(10px);
+    color: var(--header-text-color);
+    background-color: var(--header-bg-color);
     font-weight: bolder;
     padding: 10px;
     height: 50px;
@@ -24,6 +40,64 @@ body * {
     position: sticky;
     top: 0;
     margin-bottom: 35px;
+}
+
+#header::before {
+    content: "";
+    background-image: url('../icons/logo.png');
+    width: 50px;
+    height: 50px;
+    filter: invert(100%);
+    background-position: center;
+    background-size: contain;
+    margin: 10px;
+    margin-right: 20px;
+}
+
+#footer {
+    color: var(--footer-text-color);
+    background-color: var(--footer-bg-color);
+    margin-top: 60px;
+    font-weight: lighter;
+    padding: 20px;
+    height: 60px;
+    align-items: center;
+    font-size: 15px;
+    bottom: 0;
+    justify-content: space-between;
+}
+
+#footer > div:first-child {
+    font-weight: bold;
+}
+
+#footer > div {
+    flex-direction: column;
+}
+
+#footer ul {
+    list-style: none; /* Remove default bullets */
+    margin-bottom: 0px;
+}
+
+#footer ul li::before {
+    content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+    color: white; /* Change the color */
+    font-weight: bold; /* If you want it to be bold */
+    display: inline-block; /* Needed to add space between the bullet and the text */
+    width: 1em; /* Also needed for space (tweak if needed) */
+    margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+#footer a {
+    color: var(--footer-text-color);
+    text-decoration: none;
+    font-weight: lighter;
+    transition: transform .2s;
+}
+
+#footer a:hover {
+    transform: scale(1.02);
 }
 
 #pageNotFoundContent {
@@ -36,7 +110,7 @@ body * {
 #pageNotFoundContent .title {
     flex-direction: column;
     font-size: 100px;
-    color: rgb(59, 59, 59);
+    color: var(--title-color);
 }
 
 #pageNotFoundContent .subscript {
@@ -44,6 +118,7 @@ body * {
     align-items: center;
     flex-direction: column;
     font-size: 20px;
+    color: var(--text-color);
 }
 
 #pageNotFoundContent .subscript span {
@@ -60,4 +135,105 @@ body * {
 
 #pageNotFoundContent iframe {
     border-radius: 20px;
+}
+
+.hide {
+    display: none !important;
+}
+
+#transactionTable, #transactionTableBody {
+    display: none;
+}
+
+#transactionTable + #loginContent.hide, #transactionTableBody + #loginContent.hide {
+    display: flex;
+}
+
+#loginContent {
+    background-color: black;
+    height: 100%;
+    flex-direction: row;
+    color: var(--text-color-inverted);
+    align-items: center;
+    justify-content: space-between;
+}
+
+#loginContent>.title {
+    font-weight: bolder;
+    font-size: 70px;
+    letter-spacing: 5px;
+    padding: 20px;
+    flex-direction: column;
+}
+
+#loginContent>.title::before {
+    content: "";
+    background-image: url('../icons/logo.png');
+    width: 70px;
+    height: 70px;
+    filter: invert(100%);
+    background-position: center;
+    background-size: contain;
+    margin-bottom: 30px;
+}
+
+#loginContent>.title.fadeIn {
+    opacity: 1;
+    animation: fadeTitle 1s linear;
+}
+
+#loginContent .loginForm {
+    height: 100%;
+    background-color: var(--main-bg-color);
+    width: 40%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#loginContent .loginForm>.title{
+    font-size: 50px;
+    color: var(--title-color);
+
+}
+
+#loginContent .loginForm.fadeIn {
+    opacity: 1;
+    animation: fadeForm 1.5s linear;
+}
+
+#loginContent .loginForm form {
+    flex-direction: column;
+    color: var(--text-color);
+    font-size: 20px;
+    width: 80%;
+}
+
+#loginContent .loginForm form>label{
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+#loginContent .loginForm form .field{
+    height: 35px;
+    background: white;
+    border-radius: 5px;
+    border: white;
+    box-shadow: var(--field-box-shadow);
+    padding: 5px;
+}
+
+#loginContent .loginForm form input[type="submit"]{
+    width: 100%;
+}
+
+
+@keyframes fadeTitle {
+    0% { opacity: 0 }
+    100% { opacity: 1 }
+}
+
+@keyframes fadeForm {
+    0%,50% { opacity: 0 }
+    100% { opacity: 1 }
 }
