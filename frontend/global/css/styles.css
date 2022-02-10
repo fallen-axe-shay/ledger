@@ -1,0 +1,17 @@
+#pageNotFoundContent {
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+    justify-content: center;
+    align-items: center;
+}
+
+#pageNotFoundContent .title {
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+}
+
+#pageNotFoundContent p {
+    text-align: center;
+}
