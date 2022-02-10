@@ -8,6 +8,8 @@
     --footer-bg-color: black;
     --footer-text-color: white;
     --field-box-shadow: 2px 2px 1px rgb(206 206 206);
+    --field-font-size: 15px;
+    --field-padding: 10px;
 }
 
 html {
@@ -187,8 +189,11 @@ body * {
     background-color: var(--main-bg-color);
     width: 40%;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
+}
+
+#loginContent .loginForm>* {
+    margin-left: 50px;
 }
 
 #loginContent .loginForm>.title{
@@ -220,7 +225,8 @@ body * {
     border-radius: 5px;
     border: white;
     box-shadow: var(--field-box-shadow);
-    padding: 5px;
+    padding: var(--field-padding);
+    font-size: var(--field-font-size);
 }
 
 #loginContent .loginForm form input[type="submit"]{
