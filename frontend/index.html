@@ -75,7 +75,10 @@
                     <label for="merchantName">Merchant Name</label>
                     <input type="text" class="field" id="merchantName" name="merchantName" placeholder="Merchant" onkeypress="clearTransactionFormValidation('merchantName')" onchange="cleanTransactionData('merchantName')">
                     <label for="amount">Amount</label>
-                    <input type="number" class="field" id="amount" name="amount" placeholder="Amount" onkeypress="clearTransactionFormValidation('amount')" onchange="cleanTransactionData('amount')">
+                    <div class="field">
+                        <span>$</span>
+                        <input type="number" id="amount" name="amount" placeholder="Amount" onkeypress="clearTransactionFormValidation('amount')" onchange="cleanTransactionData('amount')">
+                    </div>
                     <label for="amount">Amount</label>
                     <input type="date" class="field" id="date" name="date" placeholder="Date" onkeypress="clearTransactionFormValidation('date')" onchange="cleanTransactionData('date')">
                     <button type="button" onclick="addTransaction()">Add</button>

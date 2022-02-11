@@ -157,7 +157,6 @@ function populateTransactions() {
                     $transactionContainer.find('#transactionForm').removeClass('hide');
                     $transactionContainer.find('.spinner-div').toggleClass('hide');
                     var transactionList = response.transactionList;
-                    console.log(transactionList);
                     var tableBodyData = document.createDocumentFragment();
                     var tableBodyElement = document.getElementById('transactionTableBody');
                     for (var index=0; index<transactionList.length; index++) {                    
@@ -241,7 +240,7 @@ function addTransaction() {
     var $date = $('#date');
     var merchantNameVal = $merchantName.val().trim();
     var amountVal = $amount.val().trim();
-    var dateVal = $date.val().trim();
+    var dateVal = $date.val().trim().replace('$ ', '');
     $merchantName.val(merchantNameVal);
     $amount.val(amountVal);
     if(merchantNameVal =='' || amountVal=='' || isNaN(parseInt(amountVal)) || dateVal == '') {

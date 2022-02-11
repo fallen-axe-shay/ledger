@@ -605,6 +605,21 @@ body * {
     box-shadow: var(--field-box-shadow);
     padding: var(--field-padding);
     font-size: var(--field-font-size);
+    display: inline-flex;
+    align-items: center;
+}
+
+#transactionForm .transactionInputForm form .field input{
+    font-size: var(--field-font-size);
+    border: none;
+    outline: none;
+    height: 100%;
+    width: 100%;
+}
+
+#transactionForm .transactionInputForm form .field span{
+    font-size: 20px;
+    margin-right: 5px;
 }
 
 #transactionForm .transactionInputForm .field:focus {
