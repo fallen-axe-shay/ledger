@@ -53,7 +53,7 @@ function cleanTransactionData(element) {
 }
 
 function authenticateUser(username, password) {
-    $loginButton = $('.loginForm form button');
+    var $loginButton = $('.loginForm form button');
     $loginButton.attr('disabled', true);
     $loginButton.html('Logging In');
     $.ajax({
@@ -76,6 +76,9 @@ function authenticateUser(username, password) {
                             case 407:
                                 message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
                                 break;
+                            default:
+                                message = 'Invalid username or password.';
+                                break;
                         }
                         showLoginError(message);
                     } else {
@@ -85,6 +88,8 @@ function authenticateUser(username, password) {
                     }
                 },
         error: (XMLHttpRequest, textStatus, errorThrown) => { 
+                    $loginButton.attr('disabled', false);
+                    $loginButton.html('Login');
                     var message = 'An error occured on the server';
                     showLoginError(message);
                 }  
@@ -148,11 +153,11 @@ function populateTransactions() {
         data : { authToken : userData['authToken'] },
         success: (response) => {  
                     response = JSON.parse(response.substring(0, response.length-1));
-                    console.log(response);
                     $transactionContainer.find('#transactionTable').removeClass('hide');
                     $transactionContainer.find('#transactionForm').removeClass('hide');
                     $transactionContainer.find('.spinner-div').toggleClass('hide');
                     var transactionList = response.transactionList;
+                    console.log(transactionList);
                     var tableBodyData = document.createDocumentFragment();
                     var tableBodyElement = document.getElementById('transactionTableBody');
                     for (var index=0; index<transactionList.length; index++) {                    
@@ -168,17 +173,18 @@ function populateTransactions() {
 }
 
 function setBalance() {
+    balance = parseFloat(balance);
     $balanceElement = $('#transactionTable #balance span');
     if(balance<0) {
         $balanceElement.addClass('debt');
     } else {
         $balanceElement.removeClass('debt');
     }
-    balance = getPrettyNumber(balance);
-    if (!balance.split('.')[1]) {
-        balance += '.00'
+    var balanceStr = getPrettyNumber(balance);
+    if (!balanceStr.split('.')[1]) {
+        balanceStr += '.00'
     }
-    $balanceElement.html(`\$ ${balance}`);
+    $balanceElement.html(`\$ ${balanceStr}`);
 } 
 
 function showTransactionPageError() {
@@ -189,13 +195,13 @@ function getTableRow(item) {
     var row;
     row = document.createElement("tr");
     tableData = document.createElement("td");
-    tableData.appendChild(document.createTextNode(getPrettyDate(item.inserted)));
+    tableData.appendChild(document.createTextNode(getPrettyDate(item.created)));
     row.appendChild(tableData);
     tableData = document.createElement("td");
     tableData.appendChild(document.createTextNode(item.merchant));
     row.appendChild(tableData);
     tableData = document.createElement("td");
-    amount = parseInt(item.convertedAmount);
+    amount = parseFloat(item.amount)/100;
     balance += amount;
     if(amount<0) {
         tableData.className = 'debit';
@@ -230,21 +236,81 @@ function closeNav() {
 
 function addTransaction() {
     $('.transactionInputForm .error').addClass('hide');
-    var $username = $('#username');
-    var $password = $('#password');
-    var userVal = $username.val().trim();
-    var passVal = window.btoa($password.val().trim());
-    $username.val(userVal);
-    $password.val(passVal);
-    if(userVal=='' || passVal=='') {
-        document.querySelector('#password').setCustomValidity('Enter a valid password');
-        document.querySelector('#username').setCustomValidity('Enter a valid username');
-        (passVal == '') && document.querySelector('#password').reportValidity();
-        (userVal == '') && document.querySelector('#username').reportValidity();
+    var $merchantName = $('#merchantName');
+    var $amount = $('#amount');
+    var $date = $('#date');
+    var merchantNameVal = $merchantName.val().trim();
+    var amountVal = $amount.val().trim();
+    var dateVal = $date.val().trim();
+    $merchantName.val(merchantNameVal);
+    $amount.val(amountVal);
+    if(merchantNameVal =='' || amountVal=='' || isNaN(parseInt(amountVal)) || dateVal == '') {
+        document.querySelector('#merchantName').setCustomValidity('Enter a valid merchant name');
+        document.querySelector('#amount').setCustomValidity('Enter a valid amount');
+        document.querySelector('#date').setCustomValidity('Enter a valid date');
+        (dateVal == '') && document.querySelector('#date').reportValidity();
+        (amountVal == '' || isNaN(parseInt(amountVal))) && document.querySelector('#amount').reportValidity();
+        (merchantNameVal == '') && document.querySelector('#merchantName').reportValidity();
     } else {
         clearTransactionFormValidation('merchantName') && clearTransactionFormValidation('amount') && clearTransactionFormValidation('date');
-        authenticateUser(userVal, passVal);
+        createTransaction(merchantNameVal, amountVal, dateVal);
     }
+}
+
+function createTransaction(merchant, amount, date) {
+    amount = (-1*parseFloat(amount)*100).toString(); //Convert USD amount to Cents. -1 is multiplied to counteract the API issue
+    var $transactionButton = $('.transactionInputForm button');
+    $transactionButton.attr('disabled', true);
+    $transactionButton.html('Adding Transaction');
+    $.ajax({
+        type : "POST",
+        url  : ENV_DATA['createTransactionEndpoint'],
+        data : { merchant : merchant, amount : amount, date : date, authToken : userData['authToken'] },
+        success: (response) => {  
+                    response = JSON.parse(response.substring(0, response.length-1));
+                    $transactionButton.attr('disabled', false);
+                    $transactionButton.html('Add');
+                    if(response['jsonCode'] != 200) {
+                        message = 'Unable to add transaction.';
+                        showTransactionFormError(message);
+                    } else {
+                        var data = {
+                            merchant: merchant,
+                            amount: (-1*parseFloat(amount)), //-1 is multiplied to get back the correct amount (as it as changed to counteract the API issue)
+                            created: date
+                        }
+                        addNewRowToTransactionTable(data);
+                        clearTransactionFields();
+                        closeNav();
+                    }
+                },
+        error: (XMLHttpRequest, textStatus, errorThrown) => { 
+                    $transactionButton.attr('disabled', false);
+                    $transactionButton.html('Add');
+                    var message = 'An error occured on the server';
+                    showTransactionFormError(message);
+                }  
+    });
+}
+
+function clearTransactionFields() {
+    $('#merchantName').val('');
+    $('#amount').val('');
+    $('#date').val('');
+}
+
+function addNewRowToTransactionTable(data) {
+    var tableBodyElement = document.getElementById('transactionTableBody');
+    var row = getTableRow(data);
+    row.className = 'addedRow';
+    tableBodyElement.insertBefore(row, tableBodyElement.firstChild);
+    setBalance();
+}
+
+function showTransactionFormError(message) {
+    $error = $('.transactionInputForm .error');
+    $error.removeClass('hide');
+    $error.find('span').html(message);
 }
 
 function logout() {

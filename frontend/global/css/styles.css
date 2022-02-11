@@ -320,7 +320,6 @@ body * {
 
 #loginContent .loginForm .error {
     color: var(--error-text-color);
-    background-color: var(--error-bg-color);
     border-radius: var(--button-border-radius);
     padding: 10px;
     margin-top: 20px;
@@ -406,6 +405,11 @@ body * {
     color: white;
     border: 1px rgba(255, 255, 255, 0.356) solid;
 }
+
+#transactionTable .scrollableTable tr.addedRow {
+    background-color: #385d36d0;
+}
+
 
 #transactionTable .scrollableTable tr:hover {
     background: rgba(255, 255, 255, 0.144);
@@ -639,13 +643,13 @@ body * {
 
 #transactionForm .transactionInputForm .error {
     color: var(--error-text-color);
-    background-color: var(--error-bg-color);
     border-radius: var(--button-border-radius);
     padding: 10px;
     margin-top: 20px;
     font-weight: lighter;
     font-size: 15px;
     justify-content: center;
+    width: 100%;
 }
 
 #transactionForm .transactionInputForm .error span {

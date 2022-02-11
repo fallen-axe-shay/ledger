@@ -39,6 +39,9 @@ password: hire_me
 2. Login portion of the task (Frontend and Backend) - 3 hours
 3. 404 Page - 2 hours
 
+## Issues with the API
+1. The POST API ```GET https://www.expensify.com/api?command=Get``` to create a transaction creates an entry with the negative of the amount. This issue needs to be fixed. 
+
 ## References
 1. [Markdown Reference](https://www.markdownguide.org/) 
 2. [Creating a Heroku server to deploy PHP ](https://www.doabledanny.com/Deploy-PHP-And-MySQL-to-Heroku)
