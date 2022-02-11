@@ -36,6 +36,8 @@ password: hire_me
 
 ## Time Measurements
 1. Hosting a PHP environment on Heroku - 1 hour
+2. Login portion of the task (Frontend and Backend) - 3 hours
+3. 404 Page - 2 hours
 
 ## References
 1. [Markdown Reference](https://www.markdownguide.org/) 

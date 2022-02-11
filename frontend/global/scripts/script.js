@@ -1,4 +1,11 @@
-// console.log(ENV_DATA);
+const myStorage = window.sessionStorage;
+
+(function() {
+    let authToken = sessionStorage.getItem('authToken');
+    if(authToken) {
+        hideLoginPage(true);
+    }
+}());
 
 function login() {
     var $username = $('#username');
@@ -35,7 +42,7 @@ function authenticateUser(username, password) {
     $loginButton.html('Logging In');
     $.ajax({
         type : "POST",
-        url  : "backend-services/login.php",
+        url  : ENV_DATA['loginEndpoint'],
         data : { username : username, password : password },
         success: (response) => {  
                     response = JSON.parse(response.substring(0, response.length-1));
@@ -44,7 +51,9 @@ function authenticateUser(username, password) {
                     if(response['jsonCode'] != 200) {
                         showLoginError(false);
                     } else {
-                        hideLoginPage();
+                        console.log(response);
+                        sessionStorage.setItem('authToken', response['authToken']);
+                        hideLoginPage(false);
                         populateTransactions(response);
                     }
                 },
@@ -63,14 +72,17 @@ function showLoginError(serverError) {
     }, 5000);
 }
 
-function hideLoginPage() {
+function hideLoginPage(immediate) {
+    setTimeout(()=> {
+        $('#loginContent').addClass('hide');
+    }, immediate ? 0 : 2000);
     $('#loginContent').css({'transition': '1s', 'height': '0px'});
     $('#loginContent *').addClass('fadeOut');
     showTransactionPage();
 }
 
 function showTransactionPage() {
-    $('#transactionTable, #transactionTableBody').removeClass('hide');
+    $('#transactionContainer').removeClass('hide');
 }
 
 function populateTransactions(data) {

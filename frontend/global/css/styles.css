@@ -1,8 +1,10 @@
 :root {
     --main-bg-color: rgb(236, 236, 236);
     --title-color: rgb(59, 59, 59);
+    --title-color-inverted: var(--text-color-inverted);
     --text-color: rgb(51, 51, 51);
     --text-color-inverted: white;
+    --main-bg-color-inverted: black;
     --header-bg-color: black;
     --header-text-color: white;
     --footer-bg-color: black;
@@ -14,7 +16,7 @@
     --button-border-radius: 5px;
     --header-bottom-margin: 0px;
     --footer-top-margin: 0px;
-    --header-height: 50px;
+    --header-height: 70px;
     --footer-height: 70px;
     --content-side-margins: 50px;
     --disabled-button-bg-color: rgb(188 188 188);
@@ -23,6 +25,7 @@
     --button-border: 2px solid black;
     --error-text-color:rgb(255 70 70);
     --error-bg-color:rgb(255 214 214);
+    --header-footer-border: 1px solid rgb(255, 255, 255);
 }
 
 html {
@@ -31,7 +34,7 @@ html {
 
 body {
     font-family: sans-serif;
-    background-color: var(--main-bg-color);
+    background-color: var(--main-bg-color-inverted);
     background-attachment: fixed;
     background-repeat: no-repeat;
     background-size: cover;
@@ -55,6 +58,7 @@ body * {
     position: sticky;
     top: 0;
     margin-bottom: var(--header-bottom-margin);
+    border-bottom: var(--header-footer-border);
 }
 
 #header::before {
@@ -80,6 +84,7 @@ body * {
     font-size: 15px;
     bottom: 0;
     justify-content: space-between;
+    border-top: var(--header-footer-border);
 }
 
 #footer > div:first-child {
@@ -134,14 +139,14 @@ body * {
 
 #pageNotFoundContent .title {
     font-size: 100px;
-    color: var(--title-color);
+    color: var(--title-color-inverted);
 }
 
 #pageNotFoundContent .subscript {
     justify-content: center;
     flex-direction: column;
     font-size: 20px;
-    color: var(--text-color);
+    color: var(--text-color-inverted);
 }
 
 #pageNotFoundContent .subscript span {
@@ -221,7 +226,7 @@ body * {
 
 #loginContent .loginForm.fadeIn {
     opacity: 1;
-    animation: fadeForm 1.5s linear;
+    animation: fadeForm 1s linear;
 }
 
 #loginContent .loginForm form {
@@ -305,6 +310,17 @@ body * {
     margin-right: 20px;
 }
 
+#transactionContainer {
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    color: var(--text-color-inverted);
+    background-color: var(--main-bg-color-inverted);
+}
+
+#transactionTable, #transactionTableBody {
+    margin-left: var(--content-side-margins);
+}
 
 @keyframes fadeTitle {
     0% { opacity: 0 }
