@@ -18,9 +18,10 @@ function login() {
     var $username = $('#username');
     var $password = $('#password');
     var userVal = $username.val().trim();
-    var passVal = window.btoa($password.val().trim());
+    var passVal = $password.val().trim();
     $username.val(userVal);
     $password.val(passVal);
+    passVal = window.btoa(passVal);
     if(userVal=='' || passVal=='') {
         document.querySelector('#password').setCustomValidity('Enter a valid password');
         document.querySelector('#username').setCustomValidity('Enter a valid username');
@@ -191,7 +192,7 @@ function showTransactionPageError() {
 }
 
 function getTableRow(item) {
-    var row;
+    var row, tableData;
     row = document.createElement("tr");
     tableData = document.createElement("td");
     tableData.appendChild(document.createTextNode(getPrettyDate(item.created)));
@@ -240,20 +241,24 @@ function addTransaction() {
     var $date = $('#date');
     var merchantNameVal = $merchantName.val().trim();
     var amountVal = $amount.val().trim();
-    var dateVal = $date.val().trim().replace('$ ', '');
+    var dateVal = $date.val();
     $merchantName.val(merchantNameVal);
     $amount.val(amountVal);
-    if(merchantNameVal =='' || amountVal=='' || isNaN(parseInt(amountVal)) || dateVal == '') {
+    if(merchantNameVal == '' || checkIfAmountIsInvalid(amountVal) || dateVal == '') {
         document.querySelector('#merchantName').setCustomValidity('Enter a valid merchant name');
         document.querySelector('#amount').setCustomValidity('Enter a valid amount');
         document.querySelector('#date').setCustomValidity('Enter a valid date');
         (dateVal == '') && document.querySelector('#date').reportValidity();
-        (amountVal == '' || isNaN(parseInt(amountVal))) && document.querySelector('#amount').reportValidity();
+        checkIfAmountIsInvalid(amountVal) && document.querySelector('#amount').reportValidity();
         (merchantNameVal == '') && document.querySelector('#merchantName').reportValidity();
     } else {
         clearTransactionFormValidation('merchantName') && clearTransactionFormValidation('amount') && clearTransactionFormValidation('date');
         createTransaction(merchantNameVal, amountVal, dateVal);
     }
+}
+
+function checkIfAmountIsInvalid(amountVal) {
+    return (amountVal == '' || (amountVal.split('.').length==2 && amountVal.split('.')[1].length>2) || isNaN(parseInt(amountVal)));
 }
 
 function createTransaction(merchant, amount, date) {
