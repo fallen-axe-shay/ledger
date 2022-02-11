@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Expensify Take-Home Challenge</title>
+    <link rel="icon" href="frontend/global/icons/logo.png">
     <link rel="stylesheet" type="text/css" href="frontend/global/css/styles.css">
 </head>
 <body>
@@ -15,15 +16,18 @@
             <span class="title">Login</span>
             <form>
                 <label for="username">Username</label>
-                <input type="text" class="field" id="username" name="username" placeholder="Username">
+                <input type="text" class="field" id="username" name="username" placeholder="Username" onkeypress="clearLoginFormValidation('username')" onchange="cleanLoginData('username')">
                 <label for="password">Password</label>
-                <input type="password" class="field" id="password" name="password" placeholder="Password">
-                <input type="submit" value="Login">
+                <input type="password" class="field" id="password" name="password" placeholder="Password" onkeypress="clearLoginFormValidation('password')" onchange="cleanLoginData('password')">
+                <button type="button" onclick="login()">Login</button>
+                <div class="error hide">
+                    <span>Invalid username or password</span>
+                </div>
             </form>
         </div>
     </div>
 
-    <div id="transactionTable">
+    <div id="transactionTable" class="hide">
         <h1>Transactions:</h1>
         <table>
 
@@ -42,7 +46,7 @@
         </table>
     </div>
 
-    <div id="transactionForm">
+    <div id="transactionForm" class="hide">
         <!-- Add your create transaction form here -->
     </div>
 

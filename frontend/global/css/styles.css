@@ -10,6 +10,19 @@
     --field-box-shadow: 2px 2px 1px rgb(206 206 206);
     --field-font-size: 15px;
     --field-padding: 10px;
+    --button-padding: 10px;
+    --button-border-radius: 5px;
+    --header-bottom-margin: 0px;
+    --footer-top-margin: 0px;
+    --header-height: 50px;
+    --footer-height: 70px;
+    --content-side-margins: 50px;
+    --disabled-button-bg-color: rgb(188 188 188);
+    --diabled-button-color: var(--text-color);
+    --diabled-button-border: 2px solid var(--disabled-button-bg-color) ;
+    --button-border: 2px solid black;
+    --error-text-color:rgb(255 70 70);
+    --error-bg-color:rgb(255 214 214);
 }
 
 html {
@@ -36,12 +49,12 @@ body * {
     background-color: var(--header-bg-color);
     font-weight: bolder;
     padding: 10px;
-    height: 50px;
+    height: var(--header-height);
     align-items: center;
     font-size: 25px;
     position: sticky;
     top: 0;
-    margin-bottom: 35px;
+    margin-bottom: var(--header-bottom-margin);
 }
 
 #header::before {
@@ -59,10 +72,10 @@ body * {
 #footer {
     color: var(--footer-text-color);
     background-color: var(--footer-bg-color);
-    margin-top: 60px;
+    margin-top: var(--footer-top-margin);
     font-weight: lighter;
     padding: 20px;
-    height: 60px;
+    height: var(--footer-height);
     align-items: center;
     font-size: 15px;
     bottom: 0;
@@ -80,6 +93,7 @@ body * {
 #footer ul {
     list-style: none; /* Remove default bullets */
     margin-bottom: 0px;
+    flex-direction: column;
 }
 
 #footer ul li::before {
@@ -96,6 +110,7 @@ body * {
     text-decoration: none;
     font-weight: lighter;
     transition: transform .2s;
+    padding-bottom: 5px
 }
 
 #footer a:hover {
@@ -103,21 +118,27 @@ body * {
 }
 
 #pageNotFoundContent {
-    flex-direction: column;
+    flex-direction: row;
     font-family: sans-serif;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    max-height: calc(100% - var(--header-bottom-margin) - var(--footer-top-margin) - var(--header-height) - var(--footer-height));
+    height: 100%;
+}
+
+#pageNotFoundContent>div {
+    flex-direction: column;
+    margin-left: var(--content-side-margins);
+    max-width: 50%;
 }
 
 #pageNotFoundContent .title {
-    flex-direction: column;
     font-size: 100px;
     color: var(--title-color);
 }
 
 #pageNotFoundContent .subscript {
     justify-content: center;
-    align-items: center;
     flex-direction: column;
     font-size: 20px;
     color: var(--text-color);
@@ -125,30 +146,20 @@ body * {
 
 #pageNotFoundContent .subscript span {
     padding: 10px;
+    line-height: 40px;
 }
 
 #pageNotFoundContent .subscript span:first-child {
     margin-top: 35px;
 }
 
-#pageNotFoundContent .subscript span:last-child {
-    margin-bottom: 60px;
-}
-
 #pageNotFoundContent iframe {
     border-radius: 20px;
+    margin-right: var(--content-side-margins);
 }
 
 .hide {
     display: none !important;
-}
-
-#transactionTable, #transactionTableBody {
-    display: none;
-}
-
-#transactionTable + #loginContent.hide, #transactionTableBody + #loginContent.hide {
-    display: flex;
 }
 
 #loginContent {
@@ -158,6 +169,7 @@ body * {
     color: var(--text-color-inverted);
     align-items: center;
     justify-content: space-between;
+    z-index: 10;
 }
 
 #loginContent>.title {
@@ -182,6 +194,11 @@ body * {
 #loginContent>.title.fadeIn {
     opacity: 1;
     animation: fadeTitle 1s linear;
+}
+
+#loginContent .fadeOut {
+    opacity: 0;
+    animation: fadeContent .5s linear;
 }
 
 #loginContent .loginForm {
@@ -214,23 +231,78 @@ body * {
     width: 80%;
 }
 
-#loginContent .loginForm form>label{
+#loginContent .loginForm form>label {
     margin-top: 20px;
     margin-bottom: 10px;
 }
 
-#loginContent .loginForm form .field{
+#loginContent .loginForm form .field {
     height: 35px;
     background: white;
     border-radius: 5px;
-    border: white;
+    border: none;
     box-shadow: var(--field-box-shadow);
     padding: var(--field-padding);
     font-size: var(--field-font-size);
 }
 
-#loginContent .loginForm form input[type="submit"]{
+#loginContent .loginForm form .field:focus {
+    outline: none;
+}
+
+#loginContent .loginForm form button {
     width: 100%;
+    background-color: black;
+    color: white;
+    font-size: 20px;
+    border-radius: var(--button-border-radius);
+    display: inline-flex;
+    justify-content: center;
+    padding: var(--button-padding);
+    margin-top: 30px;
+    border: none;
+    font-weight: bold;
+    border: var(--button-border);
+    cursor: pointer;
+}
+
+#loginContent .loginForm form button:hover {
+    color: black;
+    background-color: white;
+}
+
+#loginContent .loginForm form button:disabled {
+    color: var(--diabled-button-color);
+    background-color: var(--disabled-button-bg-color);
+    border: var(--diabled-button-border);
+    cursor: default;
+}
+
+#loginContent .loginForm .error {
+    color: var(--error-text-color);
+    background-color: var(--error-bg-color);
+    border-radius: var(--button-border-radius);
+    padding: 10px;
+    margin-top: 20px;
+    font-weight: lighter;
+    font-size: 15px;
+    justify-content: center;
+}
+
+#loginContent .loginForm .error span {
+    display: inline-flex;
+    align-items: center;
+}
+
+#loginContent .loginForm .error::before {
+    content: "";
+    background-image: url('../icons/warning.png');
+    width: 30px;
+    height: 30px;
+    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
+    background-position: center;
+    background-size: contain;
+    margin-right: 20px;
 }
 
 
@@ -242,4 +314,9 @@ body * {
 @keyframes fadeForm {
     0%,50% { opacity: 0 }
     100% { opacity: 1 }
+}
+
+@keyframes fadeContent {
+    0% { opacity: 1 }
+    100% { opacity: 0 }
 }
