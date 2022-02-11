@@ -229,7 +229,22 @@ function closeNav() {
 }
 
 function addTransaction() {
-
+    $('.transactionInputForm .error').addClass('hide');
+    var $username = $('#username');
+    var $password = $('#password');
+    var userVal = $username.val().trim();
+    var passVal = window.btoa($password.val().trim());
+    $username.val(userVal);
+    $password.val(passVal);
+    if(userVal=='' || passVal=='') {
+        document.querySelector('#password').setCustomValidity('Enter a valid password');
+        document.querySelector('#username').setCustomValidity('Enter a valid username');
+        (passVal == '') && document.querySelector('#password').reportValidity();
+        (userVal == '') && document.querySelector('#username').reportValidity();
+    } else {
+        clearTransactionFormValidation('merchantName') && clearTransactionFormValidation('amount') && clearTransactionFormValidation('date');
+        authenticateUser(userVal, passVal);
+    }
 }
 
 function logout() {
