@@ -29,11 +29,25 @@
 
     <div id="transactionContainer" class="hide">
         <div id="header">
-            Expensify Take-Home Project
+            <div>
+                <span>Expensify Take-Home Project</span>
+            </div>
+            <button type="button" id="#logOutButton" onclick="logout()">Log Out</button>
+        </div>
+        <div class="spinner-div hide">
+            <div class="spinner"></div>
+        </div>
+        <div class="error hide">
+            <span>Unable to fetch Transactions</span>
         </div>
         <div id="transactionTable">
-            <h1>Transactions:</h1>
-            <table>
+            <div class="title">
+                <span>
+                    Transactions
+                </span>
+                <button type="button" onclick="openNav()">Add Transaction</button>
+            </div>
+            <table class="headerTable">
                 <thead>
                     <tr>
                         <th>Transaction Date</th>
@@ -41,14 +55,35 @@
                         <th>Amount</th>
                     </tr>
                 </thead>
-    
-                <tbody id="transactionTableBody">
-                    <!-- Add the transaction rows here -->
-                </tbody>
             </table>
+            <div class="scrollableTable">
+                <table>
+                    <tbody id="transactionTableBody">
+                    </tbody>
+                </table>
+            </div>
+            <div id="balance">
+                Current Balance:
+                <span>Balance</span>
+            </div>
         </div>    
-        <div id="transactionForm" class="hide">
-            <!-- Add your create transaction form here -->
+        <div id="transactionForm">
+            <a href="javascript:void(0)" class="closeBtn" onclick="closeNav()">&times;</a>
+            <div class="transactionInputForm">
+                <span class="title">Add Transaction</span>
+                <form>
+                    <label for="merchantName">Merchant Name</label>
+                    <input type="text" class="field" id="merchantName" name="merchantName" placeholder="Merchant" onkeypress="clearTransactionFormValidation('merchantName')" onchange="cleanTransactionData('merchantName')">
+                    <label for="amount">Amount</label>
+                    <input type="number" class="field" id="amount" name="amount" placeholder="Amount" onkeypress="clearTransactionFormValidation('amount')" onchange="cleanTransactionData('amount')">
+                    <label for="amount">Amount</label>
+                    <input type="date" class="field" id="date" name="date" placeholder="Date" onkeypress="clearTransactionFormValidation('date')" onchange="cleanTransactionData('date')">
+                    <button type="button" onclick="addTransaction()">Add</button>
+                    <div class="error hide">
+                        <span>Unable to Add Transaction</span>
+                    </div>
+                </form>
+            </div>
         </div>
         <div id="footer">
             <div>

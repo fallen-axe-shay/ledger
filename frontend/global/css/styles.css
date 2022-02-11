@@ -1,5 +1,6 @@
 :root {
-    --main-bg-color: rgb(236, 236, 236);
+    /* --main-bg-color: rgb(236, 236, 236); */
+    --main-bg-color: white;
     --title-color: rgb(59, 59, 59);
     --title-color-inverted: var(--text-color-inverted);
     --text-color: rgb(51, 51, 51);
@@ -23,6 +24,7 @@
     --diabled-button-color: var(--text-color);
     --diabled-button-border: 2px solid var(--disabled-button-bg-color) ;
     --button-border: 2px solid black;
+    --button-border-inverted: 2px solid white;
     --error-text-color:rgb(255 70 70);
     --error-bg-color:rgb(255 214 214);
     --header-footer-border: 1px solid rgb(255, 255, 255);
@@ -30,6 +32,7 @@
 
 html {
     height: 100%;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -41,10 +44,12 @@ body {
     background-position: center;
     margin: 0px;
     height: 100%;
+    overflow-y: hidden;
 }
 
 body * {
     display: flex;
+    scroll-behavior: smooth;
 }
 
 #header {
@@ -59,9 +64,14 @@ body * {
     top: 0;
     margin-bottom: var(--header-bottom-margin);
     border-bottom: var(--header-footer-border);
+    justify-content: space-between;
 }
 
-#header::before {
+#header div {
+    align-items: center;
+}
+
+#header div::before {
     content: "";
     background-image: url('../icons/logo.png');
     width: 50px;
@@ -72,6 +82,29 @@ body * {
     margin: 10px;
     margin-right: 20px;
 }
+
+#header button {
+    float: right;
+    color: var(--text-color-inverted);
+    background-color: var(--main-bg-color-inverted);
+    border: var(--button-border-inverted);
+    border-radius: var(--button-border-radius);
+    padding: var(--button-padding);
+    width: 100px;
+    display: inline-flex;
+    justify-content: center;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#header button:hover {
+    color: black;
+    background-color: white;
+    border: var(--button-border);
+}
+
+
 
 #footer {
     color: var(--footer-text-color);
@@ -127,7 +160,7 @@ body * {
     font-family: sans-serif;
     justify-content: space-between;
     align-items: center;
-    max-height: calc(100% - var(--header-bottom-margin) - var(--footer-top-margin) - var(--header-height) - var(--footer-height));
+    max-height: calc(100% - var(--header-bottom-margin) - var(--footer-top-margin) - var(--header-height) - var(--footer-height) - 70px);
     height: 100%;
 }
 
@@ -237,8 +270,8 @@ body * {
 }
 
 #loginContent .loginForm form>label {
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 20px;
 }
 
 #loginContent .loginForm form .field {
@@ -262,6 +295,7 @@ body * {
     font-size: 20px;
     border-radius: var(--button-border-radius);
     display: inline-flex;
+    align-items: center;
     justify-content: center;
     padding: var(--button-padding);
     margin-top: 30px;
@@ -269,6 +303,7 @@ body * {
     font-weight: bold;
     border: var(--button-border);
     cursor: pointer;
+    height: 60px;
 }
 
 #loginContent .loginForm form button:hover {
@@ -313,13 +348,330 @@ body * {
 #transactionContainer {
     flex-direction: column;
     justify-content: space-between;
+    width: 100%;
     height: 100%;
     color: var(--text-color-inverted);
     background-color: var(--main-bg-color-inverted);
 }
 
-#transactionTable, #transactionTableBody {
+#transactionTable {
     margin-left: var(--content-side-margins);
+    margin-right: var(--content-side-margins);
+}
+
+#transactionContainer.fadeOut {
+    opacity: 0;
+    animation: fadeContent .5s linear;
+}
+
+.spinner-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    border: 10px solid white;
+    border-top: 10px solid black;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+#transactionTable {
+    flex-direction: column;
+    max-height: calc(100% - var(--header-bottom-margin) - var(--footer-top-margin) - var(--header-height) - var(--footer-height) - 70px);
+    height: 100%;
+}
+
+#transactionTable table {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    color: var(--text-color);
+    border-collapse: collapse;
+}
+
+#transactionTable .scrollableTable {
+    display: block;
+    overflow-y: overlay !important;
+    overflow-x: hidden;
+    height: 70%;
+    padding-bottom: 0px;
+}
+
+#transactionTable .scrollableTable tr {
+    background-color: black;
+    color: white;
+    border: 1px rgba(255, 255, 255, 0.356) solid;
+}
+
+#transactionTable .scrollableTable tr:hover {
+    background: rgba(255, 255, 255, 0.144);
+}
+
+#transactionTable table tbody {
+    display: table-row-group;
+    max-height: 200px;
+}
+
+#transactionTable table thead {
+    display: table-header-group;
+    border-bottom: 1px solid var(--text-color);
+}
+
+#transactionTable table tr {
+    display: table-row
+}
+
+#transactionTable table td, 
+#transactionTable table th {
+    display: table-cell;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+#transactionTable table th {
+    font-size: 30px;
+}
+
+#transactionTableBody td {
+    padding-left: 20px !important;
+}
+
+#transactionTableBody td:first-child {
+    text-align: center;
+}
+
+#transactionTable table td {
+    font-size: 25px;
+    font-weight: bold;
+}
+
+#transactionTable table td.credit {
+    color: #0ca30c;
+}
+
+#transactionTable table td.debit {
+    color: var(--error-text-color);
+}
+
+#transactionTable table thead {
+    position: sticky;
+    top: 0;
+    background-color: var(--main-bg-color);
+}
+
+#transactionTable .title {
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-color-inverted);
+    font-size: 50px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    z-index: 500;
+}
+
+#transactionTable .title button {
+    color: var(--text-color-inverted);
+    background-color: var(--main-bg-color-inverted);
+    border: var(--button-border-inverted);
+    border-radius: var(--button-border-radius);
+    padding: var(--button-padding);
+    width: 200px;
+    display: inline-flex;
+    justify-content: center;
+    font-size: 17px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#transactionTable .title button:hover {
+    color: black;
+    background-color: white;
+    border: var(--button-border);
+}
+
+#transactionTable #balance {
+    color: var(--text-color-inverted);
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+#transactionTable #balance span {
+    color: #0ca30c;
+    margin-left: 15px;
+}
+
+#transactionTable #balance span.debt {
+    color: var(--error-text-color);
+}
+
+#transactionContainer .error {
+    color: var(--error-text-color);
+    border-radius: var(--button-border-radius);
+    padding: 10px;
+    margin-top: 20px;
+    font-weight: lighter;
+    font-size: 20px;
+    justify-content: center;
+    width: 80%;
+    align-self: center;
+}
+
+#transactionContainer .error span {
+    display: inline-flex;
+    align-items: center;
+}
+
+#transactionContainer .error::before {
+    content: "";
+    background-image: url('../icons/warning.png');
+    width: 40px;
+    height: 40px;
+    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
+    background-position: center;
+    background-size: contain;
+    margin-right: 20px;
+}
+
+#transactionForm {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: var(--main-bg-color);
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    z-index: 1000;
+    flex-direction: column;
+}
+
+#transactionForm .closeBtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 60px;
+    color: var(--text-color);
+    text-decoration: none;
+}
+
+#transactionForm .transactionInputForm {
+    height: 100%;
+    background-color: var(--main-bg-color);
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#transactionForm .transactionInputForm>* {
+    margin-left: 50px;
+}
+
+#transactionForm .transactionInputForm>.title{
+    font-size: 50px;
+    color: var(--title-color);
+
+}
+
+#transactionForm .transactionInputForm form {
+    flex-direction: column;
+    color: var(--text-color);
+    font-size: 20px;
+    width: 80%;
+}
+
+#transactionForm .transactionInputForm form>label {
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+#transactionForm .transactionInputForm form .field {
+    height: 35px;
+    background: white;
+    border-radius: 5px;
+    border: none;
+    box-shadow: var(--field-box-shadow);
+    padding: var(--field-padding);
+    font-size: var(--field-font-size);
+}
+
+#transactionForm .transactionInputForm .field:focus {
+    outline: none;
+}
+
+#transactionForm .transactionInputForm form button {
+    width: 100%;
+    background-color: black;
+    color: white;
+    font-size: 20px;
+    border-radius: var(--button-border-radius);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--button-padding);
+    margin-top: 30px;
+    border: none;
+    font-weight: bold;
+    border: var(--button-border);
+    cursor: pointer;
+    height: 60px;
+}
+
+#transactionForm .transactionInputForm form button:hover {
+    color: black;
+    background-color: white;
+}
+
+#transactionForm .transactionInputForm form button:disabled {
+    color: var(--diabled-button-color);
+    background-color: var(--disabled-button-bg-color);
+    border: var(--diabled-button-border);
+    cursor: default;
+}
+
+#transactionForm .transactionInputForm .error {
+    color: var(--error-text-color);
+    background-color: var(--error-bg-color);
+    border-radius: var(--button-border-radius);
+    padding: 10px;
+    margin-top: 20px;
+    font-weight: lighter;
+    font-size: 15px;
+    justify-content: center;
+}
+
+#transactionForm .transactionInputForm .error span {
+    display: inline-flex;
+    align-items: center;
+}
+
+#transactionForm .transactionInputForm .error::before {
+    content: "";
+    background-image: url('../icons/warning.png');
+    width: 30px;
+    height: 30px;
+    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
+    background-position: center;
+    background-size: contain;
+    margin-right: 20px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0; 
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
 }
 
 @keyframes fadeTitle {
@@ -335,4 +687,9 @@ body * {
 @keyframes fadeContent {
     0% { opacity: 1 }
     100% { opacity: 0 }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
