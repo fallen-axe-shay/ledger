@@ -12,22 +12,24 @@
         <div class="title fadeIn">
             <span>Expensify<br>Take-Home<br>Project</span>
         </div>
-        <div class="loginForm fadeInWithDelay">
-            <span class="title">Login</span>
-            <form>
-                <label for="username">Username</label>
-                <input type="text" class="field" id="username" name="username" placeholder="Username">
-                <label for="password">Password</label>
-                <input type="password" class="field" id="password" name="password" placeholder="Password">
-                <button type="button" onclick="login()">Login</button>
-                <div class="error hide">
-                    <span>Invalid username or password</span>
-                </div>
-            </form>
+        <div id="loginForm" class="fadeInWithDelay">
+            <div class="loginInputForm formLayout">
+                <span class="title">Login</span>
+                <form>
+                    <label for="username">Username</label>
+                    <input type="text" class="field" id="username" name="username" placeholder="Username">
+                    <label for="password">Password</label>
+                    <input type="password" class="field" id="password" name="password" placeholder="Password">
+                    <button type="button" onclick="login()">Login</button>
+                    <div class="error hide">
+                        <span>Invalid username or password</span>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <div id="transactionContainer" class="hide">
+    <div id="transactionContainer">
         <div id="header">
             <div>
                 <span>Expensify Take-Home Project</span>
@@ -74,12 +76,18 @@
         </div>    
         <div id="transactionForm">
             <a href="javascript:void(0)" class="closeBtn" onclick="closeNav()">&times;</a>
-            <div class="transactionInputForm">
+            <div class="transactionInputForm formLayout">
                 <span class="title">Add Transaction</span>
                 <form>
                     <label for="merchantName">Merchant Name</label>
                     <input type="text" class="field" id="merchantName" name="merchantName" placeholder="Merchant">
-                    <label for="amount">Amount</label>
+                    <div class="amountLabel">
+                        <label for="amount">Amount</label>
+                        <label class="switch">
+                            <input type="checkbox" id="amountCreditSwitch">
+                            <div class="slider round"></div>
+                        </label>
+                    </div>
                     <div class="field">
                         <span>$</span>
                         <input type="text" class="numbersOnly" id="amount" name="amount" placeholder="Amount">

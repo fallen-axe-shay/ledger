@@ -1,11 +1,11 @@
 :root {
-    /* --main-bg-color: rgb(236, 236, 236); */
-    --main-bg-color: white;
+    --main-bg-color: black;
+    --main-bg-accent-color: white;
     --title-color: rgb(59, 59, 59);
     --title-color-inverted: var(--text-color-inverted);
     --text-color: rgb(51, 51, 51);
     --text-color-inverted: white;
-    --main-bg-color-inverted: black;
+    --main-bg-accent-color-inverted: black;
     --header-bg-color: black;
     --header-text-color: white;
     --footer-bg-color: black;
@@ -32,6 +32,9 @@
     --fade-in-animation: fadeInAnimation 1s linear;
     --fade-in-with-delay-animation: fadeInWithDelayAnimation 1s linear;
     --fade-out-animation: fadeOutAnimation .5s linear;
+    --slide-down-animation: slideDownAnimation .5s linear;
+    --slide-up-animation: slideUpAnimation .5s linear;
+    --formlayout-margin: 50px;
 }
 
 html {
@@ -46,10 +49,10 @@ html * {
 
 body {
     font-family: sans-serif;
-    background-color: var(--main-bg-color-inverted);
+    background-color: var(--main-bg-accent-color-inverted);
     margin: 0px;
     height: 100%;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 body *:not(table, table *) {
@@ -65,7 +68,7 @@ form {
     width: 80%;
 }
 
-form > label {
+form label {
     margin-top: 30px;
     margin-bottom: 20px;
 }
@@ -133,6 +136,66 @@ form input[type='date'] {
     cursor: text;
 }
 
+form .error {
+    color: var(--error-text-color);
+    border-radius: var(--button-border-radius);
+    padding: 10px;
+    margin-top: 20px;
+    font-weight: lighter;
+    font-size: 15px;
+    justify-content: center;
+}
+
+form .error span {
+    display: inline-flex;
+    align-items: center;
+}
+
+form .error::before {
+    content: "";
+    background-image: url('../icons/warning.png');
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
+    background-position: center;
+    background-size: contain;
+    margin-right: 20px;
+}
+
+.formLayout {
+    height: 100%;
+    background-color: var(--main-bg-accent-color);
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.formLayout > * {
+    margin-left: var(--formlayout-margin);
+    margin-right: var(--formlayout-margin);
+}
+
+.formLayout > .title {
+    font-size: 50px;
+    color: var(--title-color);
+}
+
+.transactionInputForm .amountLabel {
+    align-items: center;
+}
+
+.transactionInputForm .amountLabel label:first-child {
+    margin-right: 20px;
+}
+
+/* Hide Class */
+.hide {
+    display: none !important;
+} 
+
+/* Page Elements */ 
+
 #header {
     color: var(--header-text-color);
     background-color: var(--header-bg-color);
@@ -167,7 +230,7 @@ form input[type='date'] {
 #header button {
     float: right;
     color: var(--text-color-inverted);
-    background-color: var(--main-bg-color-inverted);
+    background-color: var(--main-bg-accent-color-inverted);
     border: var(--button-border-inverted);
     border-radius: var(--button-border-radius);
     padding: var(--button-padding);
@@ -245,7 +308,7 @@ form input[type='date'] {
     height: 100%;
 }
 
-#pageNotFoundContent>div {
+#pageNotFoundContent > div {
     flex-direction: column;
     margin-left: var(--content-side-margins);
     max-width: 50%;
@@ -277,8 +340,9 @@ form input[type='date'] {
     margin-right: var(--content-side-margins);
 }
 
-.hide {
-    display: none !important;
+#loginForm {
+    width: 40%;
+    height: 100%;
 }
 
 #loginContent {
@@ -288,7 +352,7 @@ form input[type='date'] {
     color: var(--text-color-inverted);
     align-items: center;
     justify-content: space-between;
-    z-index: 10;
+    z-index: 30;
 }
 
 #loginContent>.title {
@@ -310,57 +374,16 @@ form input[type='date'] {
     margin-bottom: 30px;
 }
 
-#loginContent .loginForm {
-    height: 100%;
-    background-color: var(--main-bg-color);
-    width: 40%;
-    flex-direction: column;
-    justify-content: center;
-}
-
-#loginContent .loginForm>* {
-    margin-left: 50px;
-}
-
-#loginContent .loginForm>.title{
-    font-size: 50px;
-    color: var(--title-color);
-
-}
-
-#loginContent .loginForm .error {
-    color: var(--error-text-color);
-    border-radius: var(--button-border-radius);
-    padding: 10px;
-    margin-top: 20px;
-    font-weight: lighter;
-    font-size: 15px;
-    justify-content: center;
-}
-
-#loginContent .loginForm .error span {
-    display: inline-flex;
-    align-items: center;
-}
-
-#loginContent .loginForm .error::before {
-    content: "";
-    background-image: url('../icons/warning.png');
-    width: 30px;
-    height: 30px;
-    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
-    background-position: center;
-    background-size: contain;
-    margin-right: 20px;
-}
-
 #transactionContainer {
+    position: absolute;
+    bottom: -100%;
     flex-direction: column;
     justify-content: space-between;
     width: 100%;
     height: 100%;
     color: var(--text-color-inverted);
-    background-color: var(--main-bg-color-inverted);
+    z-index: 10;
+    background-color: var(--main-bg-color);
 }
 
 #transactionTable {
@@ -457,7 +480,7 @@ form input[type='date'] {
 #transactionTable table thead {
     position: sticky;
     top: 0;
-    background-color: var(--main-bg-color);
+    background-color: var(--main-bg-accent-color);
 }
 
 #transactionTable .title {
@@ -468,12 +491,11 @@ form input[type='date'] {
     font-weight: bold;
     margin-top: 30px;
     margin-bottom: 30px;
-    z-index: 500;
 }
 
 #transactionTable .title button {
     color: var(--text-color-inverted);
-    background-color: var(--main-bg-color-inverted);
+    background-color: var(--main-bg-accent-color-inverted);
     border: var(--button-border-inverted);
     border-radius: var(--button-border-radius);
     padding: var(--button-padding);
@@ -509,46 +531,21 @@ form input[type='date'] {
     color: var(--error-text-color);
 }
 
-#transactionContainer .error {
-    color: var(--error-text-color);
-    border-radius: var(--button-border-radius);
-    padding: 10px;
-    margin-top: 20px;
-    font-weight: lighter;
-    font-size: 20px;
-    justify-content: center;
-    width: 80%;
-    align-self: center;
-}
-
-#transactionContainer .error span {
-    display: inline-flex;
-    align-items: center;
-}
-
-#transactionContainer .error::before {
-    content: "";
-    background-image: url('../icons/warning.png');
-    width: 40px;
-    height: 40px;
-    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
-    background-position: center;
-    background-size: contain;
-    margin-right: 20px;
-}
-
 #transactionForm {
     height: 100%;
-    width: 0;
+    width: 40%;
     position: fixed;
-    z-index: 1;
     top: 0;
-    right: 0;
-    background-color: var(--main-bg-color);
+    right: -40%;
+    background-color: var(--main-bg-accent-color);
     overflow-x: hidden;
     transition: 0.5s;
-    z-index: 1000;
+    z-index: 20;
     flex-direction: column;
+}
+
+#transactionForm.opened {
+    transform: translateX(-100%);
 }
 
 #transactionForm .closeBtn {
@@ -560,52 +557,96 @@ form input[type='date'] {
     text-decoration: none;
 }
 
-#transactionForm .transactionInputForm {
-    height: 100%;
-    background-color: var(--main-bg-color);
-    width: 100%;
-    flex-direction: column;
-    justify-content: center;
-}
+/* Slider */
 
-#transactionForm .transactionInputForm>* {
-    margin-left: 50px;
-}
-
-#transactionForm .transactionInputForm>.title{
-    font-size: 50px;
-    color: var(--title-color);
-
-}
-
-#transactionForm .transactionInputForm .error {
-    color: var(--error-text-color);
-    border-radius: var(--button-border-radius);
-    padding: 10px;
-    margin-top: 20px;
-    font-weight: lighter;
-    font-size: 15px;
-    justify-content: center;
-    width: 100%;
-}
-
-#transactionForm .transactionInputForm .error span {
-    display: inline-flex;
-    align-items: center;
-}
-
-#transactionForm .transactionInputForm .error::before {
-    content: "";
-    background-image: url('../icons/warning.png');
-    width: 30px;
+.transactionInputForm .switch {
+    position: relative;
+    display: inline-block;
+    width: 95px;
     height: 30px;
-    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
-    background-position: center;
-    background-size: contain;
-    margin-right: 20px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
+  
+.transactionInputForm .switch input {
+    display:none;
+}
+  
+.transactionInputForm .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ca2222;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+  
+.transactionInputForm .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 5px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.transactionInputForm input:checked + .slider {
+    background-color: #2ab934;
+}
+
+.transactionInputForm input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+.transactionInputForm input:checked + .slider:before {
+    transform: translateX(67px);
+}
+
+.transactionInputForm .slider:after {
+    content:'Debit';
+    color: white;
+    display: block;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    font-size: 10px;
+}
+
+.transactionInputForm input:checked + .slider:after {  
+    content:'Credit';
+}
+
 
 /* Animations */
+
+#loginContent.slideDown {
+    transition: 1s;
+    transform: translateY(0%);
+}
+
+#loginContent.slideUp {
+    transition: 1s;
+    transform: translateY(-100%);
+}
+
+#transactionContainer.slideDown {
+    transition: 1s;
+    transform: translateY(0%);
+}
+
+#transactionContainer.slideUp {
+    transition: 1s;
+    transform: translateY(-100%);
+}
 
 .fadeIn {
     opacity: 1;
@@ -630,6 +671,16 @@ form input[type='date'] {
 #transactionContainer table.fadeIn {
     opacity: 1;
     animation: fadeInAnimation .5s linear;
+}
+
+@keyframes slideDownAnimation {
+    0% { height: 0% }
+    100% { height: 100% }
+}
+
+@keyframes slideUpAnimation {
+    0% { height: 100% }
+    100% { height: 0%; }
 }
 
 @keyframes fadeInAnimation {

@@ -14,7 +14,7 @@ let balance = 0;
 }());
 
 function login() {
-    $('#loginContent .loginForm .error').addClass('hide');
+    $('#loginContent .loginInputForm .error').addClass('hide');
     var $username = $('#username');
     var $password = $('#password');
     var userVal = $username.val().trim();
@@ -33,7 +33,7 @@ function login() {
 }
 
 function authenticateUser(username, password) {
-    var $loginButton = $('.loginForm form button');
+    var $loginButton = $('.loginInputForm form button');
     $loginButton.attr('disabled', true);
     $loginButton.html('Logging In');
     $.ajax({
@@ -77,7 +77,7 @@ function authenticateUser(username, password) {
 }
 
 function showLoginError(message) {
-    $error = $('#loginContent .loginForm .error');
+    $error = $('#loginContent .loginInputForm .error');
     $error.removeClass('hide');
     $error.find('span').html(message);
 }
@@ -89,33 +89,29 @@ function clearLoginPage() {
 
 function hideLoginPage() {
     var $loginContent = $('#loginContent');
-    $loginContent.find('*').removeClass('fadeIn');
-    $loginContent.find('*').addClass('fadeOut');
-    $loginContent.css({'transition': '1s', 'height': '0px'});
+    $loginContent.addClass('slideUp');
+    $loginContent.removeClass('slideDown');
     showTransactionPage();
     clearLoginPage();
 }
 
 function showLoginPage() {
     var $loginContent = $('#loginContent');
-    $loginContent.find('*').removeClass('fadeOut');
-    $loginContent.find('.title').addClass('fadeIn');
-    $loginContent.find('.loginForm').addClass('fadeIn');
-    $loginContent.css({'transition': '1s', 'height': '100%'});
+    $loginContent.removeClass('hide');
+    $loginContent.addClass('slideDown');
+    $loginContent.removeClass('slideUp');
     hideTransactionPage();
 }
 
 function showTransactionPage() {
-    var $transactionContainer = $('#transactionContainer');
-    $transactionContainer.removeClass('fadeOut');
-    $transactionContainer.removeClass('hide');
+    $('#transactionContainer').addClass('slideUp');
+    $('#transactionContainer').removeClass('slideDown');
     populateTransactions();
 }
 
 function hideTransactionPage() {
-    var $transactionContainer = $('#transactionContainer');
-    $transactionContainer.addClass('fadeOut');
-    $transactionContainer.addClass('hide');
+    $('#transactionContainer').addClass('slideDown');
+    $('#transactionContainer').removeClass('slideUp');
 }
 
 function populateTransactions() {
@@ -188,6 +184,7 @@ function getTableRow(item) {
         tableData.className = 'credit';
     }
     amount = getPrettyNumber(amount);
+    amount = amount.replace('-', '');
     if (!amount.split('.')[1]) {
         amount += '.00'
     }
@@ -206,11 +203,11 @@ function getPrettyNumber(number) {
 }
 
 function openNav() {
-    $('#transactionForm').css('width', '40%');
+    $('#transactionForm').addClass('opened');
 }
   
 function closeNav() {
-    $('#transactionForm').css('width', '0px');
+    $('#transactionForm').removeClass('opened');
 }
 
 function addTransaction() {
@@ -221,6 +218,7 @@ function addTransaction() {
     var merchantNameVal = $merchantName.val().trim();
     var amountVal = $amount.val().trim();
     var dateVal = $date.val();
+    console.log();
     $merchantName.val(merchantNameVal);
     $amount.val(amountVal);
     if(merchantNameVal == '' || checkIfAmountIsInvalid(amountVal) || dateVal == '') {
@@ -231,6 +229,7 @@ function addTransaction() {
         checkIfAmountIsInvalid(amountVal) && document.querySelector('#amount').reportValidity();
         (merchantNameVal == '') && document.querySelector('#merchantName').reportValidity();
     } else {
+        amountVal = parseFloat(amountVal) * ($('.transactionInputForm #amountCreditSwitch').prop('checked') ? 1 : -1);
         createTransaction(merchantNameVal, amountVal, dateVal);
     }
 }
@@ -240,7 +239,8 @@ function checkIfAmountIsInvalid(amountVal) {
 }
 
 function createTransaction(merchant, amount, date) {
-    amount = (-1*parseFloat(amount)*100).toString(); //Convert USD amount to Cents. -1 is multiplied to counteract the API issue
+    console.log(amount)
+    amount = (-1 * amount * 100).toString(); //Convert USD amount to Cents. -1 is multiplied to counteract the API issue
     var $transactionButton = $('.transactionInputForm button');
     $transactionButton.attr('disabled', true);
     $transactionButton.html('Adding Transaction');
@@ -279,6 +279,7 @@ function clearTransactionFields() {
     $('#merchantName').val('');
     $('#amount').val('');
     $('#date').val('');
+    $('.transactionInputForm #amountCreditSwitch').prop('checked', false);
 }
 
 function addNewRowToTransactionTable(data) {
