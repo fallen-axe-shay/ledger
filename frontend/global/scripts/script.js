@@ -28,29 +28,8 @@ function login() {
         (passVal == '') && document.querySelector('#password').reportValidity();
         (userVal == '') && document.querySelector('#username').reportValidity();
     } else {
-        clearLoginFormValidation('username') && clearLoginFormValidation('password');
         authenticateUser(userVal, passVal);
     }
-}
-
-function clearLoginFormValidation(element) {
-    document.querySelector(`#${element}`).setCustomValidity('');
-}
-
-function clearTransactionFormValidation(element) {
-    document.querySelector(`#${element}`).setCustomValidity('');
-}
-
-function cleanLoginData(element) {
-    var $HTMLElement = $(`#${element}`);
-    var value = $HTMLElement.val().trim();
-    $HTMLElement.val(value);
-}
-
-function cleanTransactionData(element) {
-    var $HTMLElement = $(`#${element}`);
-    var value = $HTMLElement.val().trim();
-    $HTMLElement.val(value);
 }
 
 function authenticateUser(username, password) {
@@ -252,7 +231,6 @@ function addTransaction() {
         checkIfAmountIsInvalid(amountVal) && document.querySelector('#amount').reportValidity();
         (merchantNameVal == '') && document.querySelector('#merchantName').reportValidity();
     } else {
-        clearTransactionFormValidation('merchantName') && clearTransactionFormValidation('amount') && clearTransactionFormValidation('date');
         createTransaction(merchantNameVal, amountVal, dateVal);
     }
 }
@@ -321,3 +299,28 @@ function logout() {
     myStorage.clear();
     showLoginPage();
 }
+
+//JQuery Functions
+
+$('.numbersOnly').keydown(function (event) {
+    if (event.shiftKey == true) {
+        event.preventDefault();
+    }
+    if ((event.keyCode >= 48 && event.keyCode <= 57) || (event.keyCode >= 96 && event.keyCode <= 105) || event.keyCode == 8 || event.keyCode == 9 || event.keyCode == 37 || event.keyCode == 39 || event.keyCode == 46 || event.keyCode == 190) {
+            //Allow
+    } else {
+        event.preventDefault();
+    }
+    if($(this).val().indexOf('.') !== -1 && event.keyCode == 190)
+        event.preventDefault(); 
+});
+
+$('form input').on('keydown', (event) => {
+    document.querySelector(`#${event.target.id}`).setCustomValidity('');
+});
+
+$('form input').on('change', (event) => {
+    var $HTMLElement = $(event.target);
+    var value = $HTMLElement.val().trim();
+    $HTMLElement.val(value);
+});

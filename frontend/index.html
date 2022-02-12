@@ -12,13 +12,13 @@
         <div class="title fadeIn">
             <span>Expensify<br>Take-Home<br>Project</span>
         </div>
-        <div class="loginForm fadeIn">
+        <div class="loginForm fadeInWithDelay">
             <span class="title">Login</span>
             <form>
                 <label for="username">Username</label>
-                <input type="text" class="field" id="username" name="username" placeholder="Username" onkeypress="clearLoginFormValidation('username')" onchange="cleanLoginData('username')">
+                <input type="text" class="field" id="username" name="username" placeholder="Username">
                 <label for="password">Password</label>
-                <input type="password" class="field" id="password" name="password" placeholder="Password" onkeypress="clearLoginFormValidation('password')" onchange="cleanLoginData('password')">
+                <input type="password" class="field" id="password" name="password" placeholder="Password">
                 <button type="button" onclick="login()">Login</button>
                 <div class="error hide">
                     <span>Invalid username or password</span>
@@ -78,14 +78,14 @@
                 <span class="title">Add Transaction</span>
                 <form>
                     <label for="merchantName">Merchant Name</label>
-                    <input type="text" class="field" id="merchantName" name="merchantName" placeholder="Merchant" onkeypress="clearTransactionFormValidation('merchantName')" onchange="cleanTransactionData('merchantName')">
+                    <input type="text" class="field" id="merchantName" name="merchantName" placeholder="Merchant">
                     <label for="amount">Amount</label>
                     <div class="field">
                         <span>$</span>
-                        <input type="number" id="amount" name="amount" placeholder="Amount" onkeypress="clearTransactionFormValidation('amount')" onchange="cleanTransactionData('amount')">
+                        <input type="text" class="numbersOnly" id="amount" name="amount" placeholder="Amount">
                     </div>
                     <label for="date">Amount</label>
-                    <input type="date" class="field" id="date" name="date" placeholder="Date" onkeypress="clearTransactionFormValidation('date')" onchange="cleanTransactionData('date')">
+                    <input type="date" class="field" id="date" name="date" placeholder="Date">
                     <button type="button" onclick="addTransaction()">Add</button>
                     <div class="error hide">
                         <span>Unable to add transaction</span>
