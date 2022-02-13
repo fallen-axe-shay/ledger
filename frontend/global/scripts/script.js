@@ -4,6 +4,7 @@ const myStorage = window.sessionStorage;
 let userData = {};
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 let balance = 0;
+let correctionFactor = -1; //correction factor explained further in the README docs
 //ENV_DATA imported from ../env-var/envDataFrontend.js
 
 (function() {
@@ -139,7 +140,7 @@ function checkIfAmountIsInvalid(amountVal) { //Used for reportValidity functiona
 
 function createTransaction(merchant, amount, date) { //Create a new Transaction
     disableTransactionButton();
-    amount = (-1 * amount * 100).toString(); //Convert USD amount to Cents. -1 is multiplied to counteract the API issue
+    amount = (correctionFactor * amount * 100).toString(); //Convert USD amount to Cents. correctionFactor is multiplied to counteract the API issue
     $.ajax({
         type : "POST",
         url  : ENV_DATA['createTransactionEndpoint'],
@@ -422,7 +423,7 @@ function createTransactionSuccessCallback(response, merchant, amount, date) {
         } else {
             var data = {
                 merchant: merchant,
-                amount: (-1*parseFloat(amount)), //-1 is multiplied to get back the correct amount (as it as changed to counteract the API issue)
+                amount: (correctionFactor * parseFloat(amount)), //correctionFactor is multiplied to get back the correct amount (as it as changed to counteract the API issue)
                 created: date
             }
             addNewRowToTransactionTable(data);
