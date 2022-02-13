@@ -117,32 +117,6 @@ form input[type='date'] {
     cursor: text;
 }
 
-form .error {
-    color: var(--error-text-color);
-    padding: 10px;
-    margin-top: 20px;
-    font-weight: lighter;
-    font-size: 15px;
-    justify-content: center;
-}
-
-form .error span {
-    display: inline-flex;
-    align-items: center;
-}
-
-form .error::before {
-    content: "";
-    background-image: url('../icons/warning.png');
-    background-repeat: no-repeat;
-    width: 30px;
-    height: 30px;
-    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
-    background-position: center;
-    background-size: contain;
-    margin-right: 20px;
-}
-
 .formLayout {
     height: 100%;
     width: 100%;
@@ -165,6 +139,34 @@ form .error::before {
 }
 
 .transactionInputForm .amountLabel label:first-child {
+    margin-right: 20px;
+}
+
+/* Error Styling */
+
+.error {
+    color: var(--error-text-color);
+    padding: 10px;
+    margin-top: 20px;
+    font-weight: lighter;
+    font-size: 15px;
+    justify-content: center;
+}
+
+.error span {
+    display: inline-flex;
+    align-items: center;
+}
+
+.error::before {
+    content: "";
+    background-image: url('../icons/warning.png');
+    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
+    filter: invert(50%) sepia(40%) saturate(2995%) hue-rotate(323deg) brightness(94%) contrast(115%);
+    background-position: center;
+    background-size: contain;
     margin-right: 20px;
 }
 

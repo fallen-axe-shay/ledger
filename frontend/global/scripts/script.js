@@ -5,23 +5,20 @@ let balance = 0;
 
 (function() {
     //Set Datepicker Max Date
-    document.getElementById('date').max = new Date().toLocaleDateString('en-ca')
+    document.getElementById('date').max = new Date().toLocaleDateString('en-ca');
     let authToken = myStorage.getItem('authToken');
     if(authToken) {
         userData['authToken'] = authToken;
         hideLoginPage();
     }
-}());
+}()); //IIFY Function to directly skip login if authToken exists
+
+
+//Login Functions
 
 function login() {
     $('#loginContent .loginInputForm .error').addClass('hide');
-    var $username = $('#username');
-    var $password = $('#password');
-    var userVal = $username.val().trim();
-    var passVal = $password.val().trim();
-    $username.val(userVal);
-    $password.val(passVal);
-    passVal = window.btoa(passVal);
+    [userVal, passVal] = getUserNameAndPassword();
     if(userVal=='' || passVal=='') {
         document.querySelector('#password').setCustomValidity('Enter a valid password');
         document.querySelector('#username').setCustomValidity('Enter a valid username');
@@ -30,6 +27,21 @@ function login() {
     } else {
         authenticateUser(userVal, passVal);
     }
+}
+
+function getUserNameAndPassword() {
+    var $username = $('#username');
+    var $password = $('#password');
+    var userVal = $username.val().trim();
+    var passVal = $password.val().trim();
+    $username.val(userVal); //Removing trailing and leading spaces
+    $password.val(passVal); //Removing trainling and leasing spaces
+    passVal = window.btoa(passVal); //Base 64 Encoding of Password
+    return [userVal, passVal];
+}
+
+function authenticateUserSuccessCallback(response) {
+    
 }
 
 function authenticateUser(username, password) {
@@ -136,23 +148,38 @@ function populateTransactions() {
         success: (response) => {  
                     try {
                         response = JSON.parse(response.substring(0, response.length-1));
-                        $transactionContainer.find('#transactionTable').removeClass('hide');
-                        $transactionContainer.find('#transactionForm').removeClass('hide');
-                        $transactionContainer.find('.spinner-div').toggleClass('hide');
-                        var transactionList = response.transactionList;
-                        var tableBodyData = document.createDocumentFragment();
-                        var tableBodyElement = document.getElementById('transactionTableBody');
-                        for (var index=0; index<transactionList.length; index++) {                    
-                            tableBodyData.appendChild(getTableRow(transactionList[index]));
+                        if(response.jsonCode != 200) {
+                            var message = '';
+                            switch(response.jsonCode) {
+                                case 407:
+                                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
+                                    break;
+                                default:
+                                    message = 'Unable to fetch transactions';
+                                    break;
+                            }
+                            showTransactionPageError(message);
+                        } else {
+                            $transactionContainer.find('#transactionTable').removeClass('hide');
+                            $transactionContainer.find('#transactionForm').removeClass('hide');
+                            $transactionContainer.find('.spinner-div').toggleClass('hide');
+                            var transactionList = response.transactionList;
+                            var tableBodyData = document.createDocumentFragment();
+                            var tableBodyElement = document.getElementById('transactionTableBody');
+                            for (var index=0; index<transactionList.length; index++) {                    
+                                tableBodyData.appendChild(getTableRow(transactionList[index]));
+                            }
+                            tableBodyElement.appendChild(tableBodyData);
+                            setBalance();
                         }
-                        tableBodyElement.appendChild(tableBodyData);
-                        setBalance();
                     } catch(ex) {
-                        showTransactionPageError();
+                        var message = 'Unable to fetch transactions';
+                        showTransactionPageError(message);
                     }
                 },
         error: (XMLHttpRequest, textStatus, errorThrown) => { 
-                    showTransactionPageError();
+                    var message = 'Server error';
+                    showTransactionPageError(message);
                 }  
     });
 }
@@ -169,8 +196,12 @@ function setBalance() {
     $balanceElement.html(`\$ ${balanceStr}`);
 } 
 
-function showTransactionPageError() {
-    $('#transactionContainer .error').removeClass('hide');
+function showTransactionPageError(message) {
+    var $transactionContainer = $('#transactionContainer');
+    var $errorDiv = $transactionContainer.find('> .error');
+    $errorDiv.find('span').html(message);
+    $errorDiv.removeClass('hide');
+    $transactionContainer.find('.spinner-div').toggleClass('hide');
 }
 
 function getTableRow(item) {
@@ -256,7 +287,15 @@ function createTransaction(merchant, amount, date) {
                         $transactionButton.attr('disabled', false);
                         $transactionButton.html('Add');
                         if(response['jsonCode'] != 200) {
-                            message = 'Unable to add transaction.';
+                            var message = '';
+                            switch(response.jsonCode) {
+                                case 407:
+                                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
+                                    break;
+                                default:
+                                    message = 'Unable to add transaction.';
+                                    break;
+                            }
                             showTransactionFormError(message);
                         } else {
                             var data = {
@@ -270,9 +309,9 @@ function createTransaction(merchant, amount, date) {
                         }
                     } catch(ex) {
                         $transactionButton.attr('disabled', false);
-                    $transactionButton.html('Add');
-                    var message = 'An error occured on the server';
-                    showTransactionFormError(message);
+                        $transactionButton.html('Add');
+                        var message = 'An error occured on the server';
+                        showTransactionFormError(message);
                     }
                 },
         error: (XMLHttpRequest, textStatus, errorThrown) => { 
