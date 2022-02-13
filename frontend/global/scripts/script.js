@@ -41,7 +41,46 @@ function getUserNameAndPassword() {
 }
 
 function authenticateUserSuccessCallback(response) {
-    
+    try {
+        var $loginButton = $('.loginInputForm form button');
+        response = JSON.parse(response.substring(0, response.length-1));
+        $loginButton.attr('disabled', false);
+        $loginButton.html('Login');
+        if(response['jsonCode'] != 200) {
+            message = '';
+            switch(response['jsonCode']) {
+                case 401:
+                    message = 'Password is wrong. Try entering the password again.';
+                    break;
+                case 404:
+                    message = 'Account not found. Make sure you are using a valid email address.';
+                    break;
+                case 407:
+                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
+                    break;
+                default:
+                    message = 'Invalid username or password.';
+                    break;
+            }
+            showLoginError(message);
+        } else {
+            userData = response;
+            sessionStorage.setItem('authToken', response['authToken']);
+            hideLoginPage();
+        }
+    } catch (ex) {
+        $loginButton.attr('disabled', false);
+        $loginButton.html('Login');
+        var message = 'An error occured on the server';
+        showLoginError(message);
+    }
+}
+
+function authenticateUserErrorCallback(XMLHttpRequest, textStatus, errorThrown) {
+    $loginButton.attr('disabled', false);
+    $loginButton.html('Login');
+    var message = 'An error occured on the server';
+    showLoginError(message);
 }
 
 function authenticateUser(username, password) {
@@ -52,46 +91,8 @@ function authenticateUser(username, password) {
         type : "POST",
         url  : ENV_DATA['loginEndpoint'],
         data : { username : username, password : password },
-        success: (response) => {  
-                    try{
-                        response = JSON.parse(response.substring(0, response.length-1));
-                        $loginButton.attr('disabled', false);
-                        $loginButton.html('Login');
-                        if(response['jsonCode'] != 200) {
-                            message = '';
-                            switch(response['jsonCode']) {
-                                case 401:
-                                    message = 'Password is wrong. Try entering the password again.';
-                                    break;
-                                case 404:
-                                    message = 'Account not found. Make sure you are using a valid email address.';
-                                    break;
-                                case 407:
-                                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
-                                    break;
-                                default:
-                                    message = 'Invalid username or password.';
-                                    break;
-                            }
-                            showLoginError(message);
-                        } else {
-                            userData = response;
-                            sessionStorage.setItem('authToken', response['authToken']);
-                            hideLoginPage();
-                        }
-                    } catch (ex) {
-                        $loginButton.attr('disabled', false);
-                        $loginButton.html('Login');
-                        var message = 'An error occured on the server';
-                        showLoginError(message);
-                    }
-                },
-        error: (XMLHttpRequest, textStatus, errorThrown) => { 
-                    $loginButton.attr('disabled', false);
-                    $loginButton.html('Login');
-                    var message = 'An error occured on the server';
-                    showLoginError(message);
-                }  
+        success: authenticateUserSuccessCallback,
+        error: authenticateUserErrorCallback  
     });
 }
 
@@ -132,6 +133,45 @@ function hideTransactionPage() {
     $('#transactionContainer').removeClass('slideUp');
 }
 
+function populateTransactionsSuccessCallback(response) {
+    try {
+        var $transactionContainer = $('#transactionContainer');
+        response = JSON.parse(response.substring(0, response.length-1));
+        if(response.jsonCode != 200) {
+            var message = '';
+            switch(response.jsonCode) {
+                case 407:
+                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
+                    break;
+                default:
+                    message = 'Unable to fetch transactions';
+                    break;
+            }
+            showTransactionPageError(message);
+        } else {
+            $transactionContainer.find('#transactionTable').removeClass('hide');
+            $transactionContainer.find('#transactionForm').removeClass('hide');
+            $transactionContainer.find('.spinner-div').toggleClass('hide');
+            var transactionList = response.transactionList;
+            var tableBodyData = document.createDocumentFragment();
+            var tableBodyElement = document.getElementById('transactionTableBody');
+            for (var index=0; index<transactionList.length; index++) {                    
+                tableBodyData.appendChild(getTableRow(transactionList[index]));
+            }
+            tableBodyElement.appendChild(tableBodyData);
+            setBalance();
+        }
+    } catch(ex) {
+        var message = 'Unable to fetch transactions';
+        showTransactionPageError(message);
+    }
+}
+
+function populateTransactionsErrorCallback(XMLHttpRequest, textStatus, errorThrown) {
+    var message = 'Server error';
+    showTransactionPageError(message);
+}
+
 function populateTransactions() {
     balance = 0;
     var $transactionContainer = $('#transactionContainer');
@@ -139,48 +179,14 @@ function populateTransactions() {
     $transactionContainer.find('#transactionTable').addClass('hide');
     $transactionContainer.find('#transactionForm').addClass('hide');
     $transactionContainer.find('.spinner-div').toggleClass('hide');
-    $('#transactionTableBody').html('');
+    $transactionContainer.find('#transactionTableBody').html('');
     $.ajax({
         type : "GET",
         async: true,
         url  : ENV_DATA['getTransactionsEndpoint'],
         data : { authToken : userData['authToken'] },
-        success: (response) => {  
-                    try {
-                        response = JSON.parse(response.substring(0, response.length-1));
-                        if(response.jsonCode != 200) {
-                            var message = '';
-                            switch(response.jsonCode) {
-                                case 407:
-                                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
-                                    break;
-                                default:
-                                    message = 'Unable to fetch transactions';
-                                    break;
-                            }
-                            showTransactionPageError(message);
-                        } else {
-                            $transactionContainer.find('#transactionTable').removeClass('hide');
-                            $transactionContainer.find('#transactionForm').removeClass('hide');
-                            $transactionContainer.find('.spinner-div').toggleClass('hide');
-                            var transactionList = response.transactionList;
-                            var tableBodyData = document.createDocumentFragment();
-                            var tableBodyElement = document.getElementById('transactionTableBody');
-                            for (var index=0; index<transactionList.length; index++) {                    
-                                tableBodyData.appendChild(getTableRow(transactionList[index]));
-                            }
-                            tableBodyElement.appendChild(tableBodyData);
-                            setBalance();
-                        }
-                    } catch(ex) {
-                        var message = 'Unable to fetch transactions';
-                        showTransactionPageError(message);
-                    }
-                },
-        error: (XMLHttpRequest, textStatus, errorThrown) => { 
-                    var message = 'Server error';
-                    showTransactionPageError(message);
-                }  
+        success: populateTransactionsSuccessCallback,
+        error: populateTransactionsErrorCallback 
     });
 }
 
@@ -272,6 +278,49 @@ function checkIfAmountIsInvalid(amountVal) {
     return (amountVal == '' || (amountVal.split('.').length==2 && amountVal.split('.')[1].length>2) || isNaN(parseInt(amountVal)));
 }
 
+function createTransactionSuccessCallback(response, merchant, amount, date) {
+    try {
+        var $transactionButton = $('.transactionInputForm button');
+        response = JSON.parse(response.substring(0, response.length-1));
+        $transactionButton.attr('disabled', false);
+        $transactionButton.html('Add');
+        if(response['jsonCode'] != 200) {
+            var message = '';
+            switch(response.jsonCode) {
+                case 407:
+                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
+                    break;
+                default:
+                    message = 'Unable to add transaction.';
+                    break;
+            }
+            showTransactionFormError(message);
+        } else {
+            var data = {
+                merchant: merchant,
+                amount: (-1*parseFloat(amount)), //-1 is multiplied to get back the correct amount (as it as changed to counteract the API issue)
+                created: date
+            }
+            addNewRowToTransactionTable(data);
+            clearTransactionFields();
+            closeNav();
+        }
+    } catch(ex) {
+        $transactionButton.attr('disabled', false);
+        $transactionButton.html('Add');
+        var message = 'An error occured on the server';
+        showTransactionFormError(message);
+    }
+}
+
+function createTransactionErrorCallback(XMLHttpRequest, textStatus, errorThrown) {
+    var $transactionButton = $('.transactionInputForm button');
+    $transactionButton.attr('disabled', false);
+    $transactionButton.html('Add');
+    var message = 'An error occured on the server';
+    showTransactionFormError(message);
+}
+
 function createTransaction(merchant, amount, date) {
     amount = (-1 * amount * 100).toString(); //Convert USD amount to Cents. -1 is multiplied to counteract the API issue
     var $transactionButton = $('.transactionInputForm button');
@@ -281,45 +330,8 @@ function createTransaction(merchant, amount, date) {
         type : "POST",
         url  : ENV_DATA['createTransactionEndpoint'],
         data : { merchant : merchant, amount : amount, date : date, authToken : userData['authToken'] },
-        success: (response) => {  
-                    try {
-                        response = JSON.parse(response.substring(0, response.length-1));
-                        $transactionButton.attr('disabled', false);
-                        $transactionButton.html('Add');
-                        if(response['jsonCode'] != 200) {
-                            var message = '';
-                            switch(response.jsonCode) {
-                                case 407:
-                                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
-                                    break;
-                                default:
-                                    message = 'Unable to add transaction.';
-                                    break;
-                            }
-                            showTransactionFormError(message);
-                        } else {
-                            var data = {
-                                merchant: merchant,
-                                amount: (-1*parseFloat(amount)), //-1 is multiplied to get back the correct amount (as it as changed to counteract the API issue)
-                                created: date
-                            }
-                            addNewRowToTransactionTable(data);
-                            clearTransactionFields();
-                            closeNav();
-                        }
-                    } catch(ex) {
-                        $transactionButton.attr('disabled', false);
-                        $transactionButton.html('Add');
-                        var message = 'An error occured on the server';
-                        showTransactionFormError(message);
-                    }
-                },
-        error: (XMLHttpRequest, textStatus, errorThrown) => { 
-                    $transactionButton.attr('disabled', false);
-                    $transactionButton.html('Add');
-                    var message = 'An error occured on the server';
-                    showTransactionFormError(message);
-                }  
+        success: (response) => { createTransactionSuccessCallback(response, merchant, amount, date) },
+        error: createTransactionErrorCallback 
     });
 }
 
