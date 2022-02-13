@@ -41,11 +41,11 @@
 ## Problems I encountered, and how I overcame them
 1. The very first issue was the usage of PHP. I had never used PHP before, so I had to read up on the documentation. It was quite simple to grasp and very easy to use. I had no troubles later on with the usage of PHP.
 2. While creating the 404 page, I did face an issue where the web server didn't redirect the user to the right 404 error page. I had to search online and then figured out that the .htaccess file was required with the right configuration set in order for the 404 redirection to work.
-3. The third issue I came across was a relatively faster way to display the large table. I did look up online and came across this [link](https://howchoo.com/code/learn-the-slow-and-fast-way-to-append-elements-to-the-dom). The author of this blog had tried various approaches and concluded (with conclusive test results) that the fastest way to display a HTML table with a large dataset is it use the node (documentFragment) approach. I later used that same methodology in the webpage.
-4. One issue I came across while testing was that the Expensify API ```GET https://www.expensify.com/api?command=Get``` made some errors in storing the transaction amount. The API stored the negative of the transaction amount for some reason. Since I don't have access to the Expensify servers (obviously), I used a correction parameter of -1 (transactionAmount * -1) on the client side while sending the data to the Expesify API.
+3. The third issue I came across was a relatively faster way to display the large table. I did look up online and came across this [link](https://howchoo.com/code/learn-the-slow-and-fast-way-to-append-elements-to-the-dom). The author of this blog had tried various approaches and concluded (with conclusive test results) that the fastest way to display a HTML table with a large dataset is to use the node (documentFragment) approach. I later used that same methodology in the webpage.
+4. One issue I came across while testing was that the Expensify API ```POST https://www.expensify.com/api?command=CreateTransaction``` made some errors in storing the transaction amount. The API stored the negative of the transaction amount for some reason. Since I don't have access to the Expensify servers (obviously), I used a correction parameter of -1 (transactionAmount * -1) on the client side while sending the data to the Expesify API.
 
 ## Issues with the Expensify API
-1. The POST API ```GET https://www.expensify.com/api?command=Get``` to create a transaction creates an entry with the negative of the amount. This issue needs to be fixed. 
+1. The POST API ```POST https://www.expensify.com/api?command=CreateTransaction``` to create a transaction creates an entry with the negative of the amount. This issue needs to be fixed. 
 
 ## References
 1. [Markdown Reference](https://www.markdownguide.org/) 
