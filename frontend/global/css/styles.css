@@ -1,41 +1,45 @@
+/* CSS Global Variables */
+
 :root {
     --main-bg-color: black;
-    --main-bg-accent-color: white;
-    --title-color: rgb(59, 59, 59);
-    --title-color-inverted: var(--text-color-inverted);
-    --text-color: rgb(51, 51, 51);
-    --text-color-inverted: white;
-    --main-bg-accent-color-inverted: black;
+    --main-bg-color-accent: white;
+    --title-color-accent: rgb(59, 59, 59);
+    --text-color-accent: rgb(51, 51, 51);
+    --text-color: white;
     --header-bg-color: black;
     --header-text-color: white;
+    --header-bottom-margin: 0px;
+    --header-height: 70px;
     --footer-bg-color: black;
     --footer-text-color: white;
+    --footer-top-margin: 0px;
+    --footer-height: 70px;
+    --header-footer-border: 1px solid rgb(255, 255, 255);
     --field-box-shadow: 2px 2px 1px rgb(206 206 206);
     --field-font-size: 15px;
     --field-padding: 10px;
+    --content-side-margins: 50px;
+    --formlayout-margin: 50px;
     --button-padding: 10px;
     --button-border-radius: 5px;
-    --header-bottom-margin: 0px;
-    --footer-top-margin: 0px;
-    --header-height: 70px;
-    --footer-height: 70px;
-    --content-side-margins: 50px;
+    --button-border: 2px solid var(--text-color);
+    --button-border-accent: 2px solid var(--main-bg-color);
     --disabled-button-bg-color: rgb(188 188 188);
-    --diabled-button-color: var(--text-color);
+    --diabled-button-color: var(--text-color-accent);
     --diabled-button-border: 2px solid var(--disabled-button-bg-color) ;
-    --button-border: 2px solid black;
-    --button-border-inverted: 2px solid white;
     --error-text-color:rgb(255 70 70);
-    --error-bg-color:rgb(255 214 214);
-    --header-footer-border: 1px solid rgb(255, 255, 255);
+    --table-row-hover-background-color: rgba(255, 255, 255, 0.144);
     --table-cell-border-color: rgba(255, 255, 255, 0.356);
     --fade-in-animation: fadeInAnimation 1s linear;
     --fade-in-with-delay-animation: fadeInWithDelayAnimation 1s linear;
     --fade-out-animation: fadeOutAnimation .5s linear;
     --slide-down-animation: slideDownAnimation .5s linear;
     --slide-up-animation: slideUpAnimation .5s linear;
-    --formlayout-margin: 50px;
+    --credit-color: #0ca30c;
+    --debit-color: rgb(255 70 70)
 }
+
+/* HTML Styling */
 
 html {
     height: 100%;
@@ -49,10 +53,11 @@ html * {
 
 body {
     font-family: sans-serif;
-    background-color: var(--main-bg-accent-color-inverted);
+    background-color: var(--main-bg-color);
     margin: 0px;
     height: 100%;
     overflow: hidden;
+    color: var(--text-color);
 }
 
 body *:not(table, table *) {
@@ -63,7 +68,6 @@ body *:not(table, table *) {
 
 form {
     flex-direction: column;
-    color: var(--text-color);
     font-size: 20px;
     width: 80%;
 }
@@ -91,32 +95,9 @@ form .field:focus {
 
 form button {
     width: 100%;
-    background-color: black;
-    color: white;
     font-size: 20px;
-    border-radius: var(--button-border-radius);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: var(--button-padding);
     margin-top: 30px;
-    border: none;
-    font-weight: bold;
-    border: var(--button-border);
-    cursor: pointer;
     height: 60px;
-}
-
-form button:hover {
-    color: black;
-    background-color: white;
-}
-
-form button:disabled {
-    color: var(--diabled-button-color);
-    background-color: var(--disabled-button-bg-color);
-    border: var(--diabled-button-border);
-    cursor: default;
 }
 
 form .field input {
@@ -138,7 +119,6 @@ form input[type='date'] {
 
 form .error {
     color: var(--error-text-color);
-    border-radius: var(--button-border-radius);
     padding: 10px;
     margin-top: 20px;
     font-weight: lighter;
@@ -165,7 +145,6 @@ form .error::before {
 
 .formLayout {
     height: 100%;
-    background-color: var(--main-bg-accent-color);
     width: 100%;
     flex-direction: column;
     justify-content: center;
@@ -178,7 +157,7 @@ form .error::before {
 
 .formLayout > .title {
     font-size: 50px;
-    color: var(--title-color);
+    color: var(--title-color-accent);
 }
 
 .transactionInputForm .amountLabel {
@@ -189,12 +168,209 @@ form .error::before {
     margin-right: 20px;
 }
 
+/* Table Styling */
+
+table {
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+tr {
+    background-color: var(--main-bg-color);
+    color: var(--text-color);
+}
+
+td, 
+th {
+    padding: 10px;
+    vertical-align: middle;
+}
+
+th {
+    font-size: 20px;
+    border-left: 1px var(--main-bg-color) solid; 
+    text-align: center;
+    background-color: var(--main-bg-color-accent);
+    color: var(--text-color-accent);
+}
+
+td {
+    font-size: 18px;
+    font-weight: lighter;
+    border-left: 1px var(--table-cell-border-color) solid;
+    padding-left: 20px !important;
+    word-wrap: break-word;
+}
+
+thead {
+    border-bottom: 1px solid var(--text-color-accent);
+    position: sticky;
+    top: 0;
+}
+
+#transactionTable table {
+    width: 100%;
+}
+
+#transactionTable .scrollableTable tr {
+    height: 80px;
+}
+
+#transactionTable .scrollableTable tr.addedRow {
+    background-color: #385d36d0;
+}
+
+
+#transactionTable .scrollableTable tr:hover {
+    background: var(--table-row-hover-background-color);
+}
+
+#transactionTableBody td:first-child {
+    text-align: center;
+}
+
+#transactionTable table td.credit {
+    color: var(--credit-color);
+}
+
+#transactionTable table td.debit {
+    color: var(--debit-color);
+}
+
+/* Button Styling */
+
+button {
+    color: var(--text-color);
+    background-color: var(--main-bg-color);
+    border: var(--button-border);
+    border-radius: var(--button-border-radius);
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: var(--button-padding);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    color: var(--main-bg-color);
+    background-color: var(--text-color);
+    border: var(--button-border-accent);
+}
+
+button:disabled {
+    color: var(--diabled-button-color) !important;
+    background-color: var(--disabled-button-bg-color) !important;
+    border: var(--diabled-button-border) !important;
+    cursor: default !important;
+}
+
+/* Accent Styling */
+
+.accent {
+    color: var(--text-color-accent);
+    background-color: var(--main-bg-color-accent);
+}
+
+.accent button {
+    color: var(--text-color);
+    background-color: var(--main-bg-color);
+    border: var(--button-border-accent);
+}
+
+.accent button:hover {
+    color: var(--main-bg-color);
+    background-color: var(--text-color);
+}
+
 /* Hide Class */
+
 .hide {
     display: none !important;
 } 
 
-/* Page Elements */ 
+/* Spinner CSS */
+
+.spinner-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    border: 10px solid var(--text-color);
+    border-top: 10px solid var(--main-bg-color);
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+/* Toggle Switch CSS */
+
+.transactionInputForm .switch {
+    position: relative;
+    display: inline-block;
+    width: 95px;
+    height: 30px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+  
+.transactionInputForm .switch input {
+    display:none;
+}
+  
+.transactionInputForm .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--debit-color);
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 34px;
+}
+  
+.transactionInputForm .slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 5px;
+    background-color: var(--text-color);
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.transactionInputForm input:checked + .slider {
+    background-color: var(--credit-color);
+}
+
+.transactionInputForm input:checked + .slider:before {
+    transform: translateX(67px);
+}
+
+.transactionInputForm .slider:after {
+    content:'Debit';
+    color: var(--text-color);
+    display: block;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    top: 50%;
+    left: 50%;
+    font-size: 10px;
+}
+
+.transactionInputForm input:checked + .slider:after {  
+    content:'Credit';
+}
+
+/* Header */ 
 
 #header {
     color: var(--header-text-color);
@@ -229,26 +405,11 @@ form .error::before {
 
 #header button {
     float: right;
-    color: var(--text-color-inverted);
-    background-color: var(--main-bg-accent-color-inverted);
-    border: var(--button-border-inverted);
-    border-radius: var(--button-border-radius);
-    padding: var(--button-padding);
     width: 100px;
-    display: inline-flex;
-    justify-content: center;
     font-size: 17px;
-    cursor: pointer;
-    font-weight: bold;
 }
 
-#header button:hover {
-    color: black;
-    background-color: white;
-    border: var(--button-border);
-}
-
-
+/* Footer */ 
 
 #footer {
     color: var(--footer-text-color);
@@ -299,9 +460,10 @@ form .error::before {
     transform: scale(1.02);
 }
 
+/* 404 Page Elements */
+
 #pageNotFoundContent {
     flex-direction: row;
-    font-family: sans-serif;
     justify-content: space-between;
     align-items: center;
     max-height: calc(100% - var(--header-bottom-margin) - var(--footer-top-margin) - var(--header-height) - var(--footer-height) - 70px);
@@ -316,14 +478,13 @@ form .error::before {
 
 #pageNotFoundContent .title {
     font-size: 100px;
-    color: var(--title-color-inverted);
 }
 
 #pageNotFoundContent .subscript {
     justify-content: center;
     flex-direction: column;
     font-size: 20px;
-    color: var(--text-color-inverted);
+    color: var(--text-color);
 }
 
 #pageNotFoundContent .subscript span {
@@ -340,22 +501,23 @@ form .error::before {
     margin-right: var(--content-side-margins);
 }
 
+/* Login Page Elements */
+
 #loginForm {
     width: 40%;
     height: 100%;
 }
 
 #loginContent {
-    background-color: black;
     height: 100%;
     flex-direction: row;
-    color: var(--text-color-inverted);
+    color: var(--text-color);
     align-items: center;
     justify-content: space-between;
     z-index: 30;
 }
 
-#loginContent>.title {
+#loginContent > .title {
     font-weight: bolder;
     font-size: 70px;
     letter-spacing: 5px;
@@ -363,7 +525,7 @@ form .error::before {
     flex-direction: column;
 }
 
-#loginContent>.title::before {
+#loginContent > .title::before {
     content: "";
     background-image: url('../icons/logo.png');
     width: 70px;
@@ -374,6 +536,8 @@ form .error::before {
     margin-bottom: 30px;
 }
 
+/* Transaction Page Elements */
+
 #transactionContainer {
     position: absolute;
     bottom: -100%;
@@ -381,7 +545,7 @@ form .error::before {
     justify-content: space-between;
     width: 100%;
     height: 100%;
-    color: var(--text-color-inverted);
+    color: var(--text-color);
     z-index: 10;
     background-color: var(--main-bg-color);
 }
@@ -391,32 +555,10 @@ form .error::before {
     margin-right: var(--content-side-margins);
 }
 
-.spinner-div {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.spinner {
-    border: 10px solid white;
-    border-top: 10px solid black;
-    border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    animation: spin 2s linear infinite;
-}
-
 #transactionTable {
     flex-direction: column;
     max-height: calc(100% - var(--header-bottom-margin) - var(--footer-top-margin) - var(--header-height) - var(--footer-height) - 70px);
     height: 100%;
-}
-
-#transactionTable table {
-    width: 100%;
-    color: var(--text-color);
-    border-collapse: collapse;
-    table-layout: fixed;
 }
 
 #transactionTable .scrollableTable {
@@ -428,65 +570,9 @@ form .error::before {
     border-bottom: 1px var(--table-cell-border-color) solid;
 }
 
-#transactionTable .scrollableTable tr {
-    background-color: black;
-    color: white;
-    height: 80px;
-}
-
-#transactionTable .scrollableTable tr.addedRow {
-    background-color: #385d36d0;
-}
-
-
-#transactionTable .scrollableTable tr:hover {
-    background: rgba(255, 255, 255, 0.144);
-}
-
-#transactionTable table thead {
-    border-bottom: 1px solid var(--text-color);
-}
-
-#transactionTable table td, 
-#transactionTable table th {
-    padding: 10px;
-    vertical-align: middle;
-}
-
-#transactionTable table th {
-    font-size: 20px;
-    border-left: 1px black solid; 
-}
-
-#transactionTableBody td:first-child {
-    text-align: center;
-}
-
-#transactionTable table td {
-    font-size: 18px;
-    font-weight: lighter;
-    border-left: 1px var(--table-cell-border-color) solid;
-    padding-left: 20px !important;
-}
-
-#transactionTable table td.credit {
-    color: #0ca30c;
-}
-
-#transactionTable table td.debit {
-    color: var(--error-text-color);
-}
-
-#transactionTable table thead {
-    position: sticky;
-    top: 0;
-    background-color: var(--main-bg-accent-color);
-}
-
 #transactionTable .title {
     justify-content: space-between;
     align-items: center;
-    color: var(--text-color-inverted);
     font-size: 50px;
     font-weight: bold;
     margin-top: 30px;
@@ -494,27 +580,10 @@ form .error::before {
 }
 
 #transactionTable .title button {
-    color: var(--text-color-inverted);
-    background-color: var(--main-bg-accent-color-inverted);
-    border: var(--button-border-inverted);
-    border-radius: var(--button-border-radius);
-    padding: var(--button-padding);
     width: 200px;
-    display: inline-flex;
-    justify-content: center;
-    font-size: 17px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-#transactionTable .title button:hover {
-    color: black;
-    background-color: white;
-    border: var(--button-border);
 }
 
 #transactionTable #balance {
-    color: var(--text-color-inverted);
     font-size: 20px;
     font-weight: bold;
     margin-top: 30px;
@@ -522,13 +591,13 @@ form .error::before {
 }
 
 #transactionTable #balance span {
-    color: #0ca30c;
+    color: var(--credit-color);
     margin-left: 15px;
     font-weight: normal;
 }
 
 #transactionTable #balance span.debt {
-    color: var(--error-text-color);
+    color: var(--debit-color);
 }
 
 #transactionForm {
@@ -537,15 +606,11 @@ form .error::before {
     position: fixed;
     top: 0;
     right: -40%;
-    background-color: var(--main-bg-accent-color);
+    background-color: var(--main-bg-color-accent);
     overflow-x: hidden;
     transition: 0.5s;
     z-index: 20;
     flex-direction: column;
-}
-
-#transactionForm.opened {
-    transform: translateX(-100%);
 }
 
 #transactionForm .closeBtn {
@@ -553,80 +618,15 @@ form .error::before {
     top: 0;
     right: 25px;
     font-size: 60px;
-    color: var(--text-color);
+    color: var(--text-color-accent);
     text-decoration: none;
 }
 
-/* Slider */
-
-.transactionInputForm .switch {
-    position: relative;
-    display: inline-block;
-    width: 95px;
-    height: 30px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-}
-  
-.transactionInputForm .switch input {
-    display:none;
-}
-  
-.transactionInputForm .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ca2222;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 34px;
-}
-  
-.transactionInputForm .slider:before {
-    position: absolute;
-    content: "";
-    height: 20px;
-    width: 20px;
-    left: 4px;
-    bottom: 5px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-.transactionInputForm input:checked + .slider {
-    background-color: #2ab934;
-}
-
-.transactionInputForm input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-}
-
-.transactionInputForm input:checked + .slider:before {
-    transform: translateX(67px);
-}
-
-.transactionInputForm .slider:after {
-    content:'Debit';
-    color: white;
-    display: block;
-    position: absolute;
-    transform: translate(-50%,-50%);
-    top: 50%;
-    left: 50%;
-    font-size: 10px;
-}
-
-.transactionInputForm input:checked + .slider:after {  
-    content:'Credit';
-}
-
-
 /* Animations */
+
+#transactionForm.opened {
+    transform: translateX(-100%);
+}
 
 #loginContent.slideDown {
     transition: 1s;

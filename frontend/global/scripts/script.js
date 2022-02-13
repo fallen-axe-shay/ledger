@@ -41,30 +41,37 @@ function authenticateUser(username, password) {
         url  : ENV_DATA['loginEndpoint'],
         data : { username : username, password : password },
         success: (response) => {  
-                    response = JSON.parse(response.substring(0, response.length-1));
-                    $loginButton.attr('disabled', false);
-                    $loginButton.html('Login');
-                    if(response['jsonCode'] != 200) {
-                        message = '';
-                        switch(response['jsonCode']) {
-                            case 401:
-                                message = 'Password is wrong. Try entering the password again.';
-                                break;
-                            case 404:
-                                message = 'Account not found. Make sure you are using a valid email address.';
-                                break;
-                            case 407:
-                                message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
-                                break;
-                            default:
-                                message = 'Invalid username or password.';
-                                break;
+                    try{
+                        response = JSON.parse(response.substring(0, response.length-1));
+                        $loginButton.attr('disabled', false);
+                        $loginButton.html('Login');
+                        if(response['jsonCode'] != 200) {
+                            message = '';
+                            switch(response['jsonCode']) {
+                                case 401:
+                                    message = 'Password is wrong. Try entering the password again.';
+                                    break;
+                                case 404:
+                                    message = 'Account not found. Make sure you are using a valid email address.';
+                                    break;
+                                case 407:
+                                    message = 'AuthToken expired. Make sure you\'re getting a new authToken from the response of each request or log in again.';
+                                    break;
+                                default:
+                                    message = 'Invalid username or password.';
+                                    break;
+                            }
+                            showLoginError(message);
+                        } else {
+                            userData = response;
+                            sessionStorage.setItem('authToken', response['authToken']);
+                            hideLoginPage();
                         }
+                    } catch (ex) {
+                        $loginButton.attr('disabled', false);
+                        $loginButton.html('Login');
+                        var message = 'An error occured on the server';
                         showLoginError(message);
-                    } else {
-                        userData = response;
-                        sessionStorage.setItem('authToken', response['authToken']);
-                        hideLoginPage();
                     }
                 },
         error: (XMLHttpRequest, textStatus, errorThrown) => { 
@@ -97,7 +104,6 @@ function hideLoginPage() {
 
 function showLoginPage() {
     var $loginContent = $('#loginContent');
-    $loginContent.removeClass('hide');
     $loginContent.addClass('slideDown');
     $loginContent.removeClass('slideUp');
     hideTransactionPage();
@@ -128,18 +134,22 @@ function populateTransactions() {
         url  : ENV_DATA['getTransactionsEndpoint'],
         data : { authToken : userData['authToken'] },
         success: (response) => {  
-                    response = JSON.parse(response.substring(0, response.length-1));
-                    $transactionContainer.find('#transactionTable').removeClass('hide');
-                    $transactionContainer.find('#transactionForm').removeClass('hide');
-                    $transactionContainer.find('.spinner-div').toggleClass('hide');
-                    var transactionList = response.transactionList;
-                    var tableBodyData = document.createDocumentFragment();
-                    var tableBodyElement = document.getElementById('transactionTableBody');
-                    for (var index=0; index<transactionList.length; index++) {                    
-                        tableBodyData.appendChild(getTableRow(transactionList[index]));
+                    try {
+                        response = JSON.parse(response.substring(0, response.length-1));
+                        $transactionContainer.find('#transactionTable').removeClass('hide');
+                        $transactionContainer.find('#transactionForm').removeClass('hide');
+                        $transactionContainer.find('.spinner-div').toggleClass('hide');
+                        var transactionList = response.transactionList;
+                        var tableBodyData = document.createDocumentFragment();
+                        var tableBodyElement = document.getElementById('transactionTableBody');
+                        for (var index=0; index<transactionList.length; index++) {                    
+                            tableBodyData.appendChild(getTableRow(transactionList[index]));
+                        }
+                        tableBodyElement.appendChild(tableBodyData);
+                        setBalance();
+                    } catch(ex) {
+                        showTransactionPageError();
                     }
-                    tableBodyElement.appendChild(tableBodyData);
-                    setBalance();
                 },
         error: (XMLHttpRequest, textStatus, errorThrown) => { 
                     showTransactionPageError();
@@ -155,10 +165,7 @@ function setBalance() {
     } else {
         $balanceElement.removeClass('debt');
     }
-    var balanceStr = getPrettyNumber(balance);
-    if (!balanceStr.split('.')[1]) {
-        balanceStr += '.00'
-    }
+    var balanceStr = getPrettyNumber(balance.toFixed(2));
     $balanceElement.html(`\$ ${balanceStr}`);
 } 
 
@@ -176,18 +183,15 @@ function getTableRow(item) {
     tableData.appendChild(document.createTextNode(item.merchant));
     row.appendChild(tableData);
     tableData = document.createElement("td");
-    amount = parseFloat(item.amount)/100;
+    amount = parseFloat(item.amount)/100; //Convert Cents to USD
     balance += amount;
     if(amount<0) {
         tableData.className = 'debit';
     } else {
         tableData.className = 'credit';
     }
-    amount = getPrettyNumber(amount);
+    amount = getPrettyNumber(amount.toFixed(2));
     amount = amount.replace('-', '');
-    if (!amount.split('.')[1]) {
-        amount += '.00'
-    }
     tableData.appendChild(document.createTextNode(`\$ ${amount}`));
     row.appendChild(tableData);
     return row;
@@ -218,7 +222,6 @@ function addTransaction() {
     var merchantNameVal = $merchantName.val().trim();
     var amountVal = $amount.val().trim();
     var dateVal = $date.val();
-    console.log();
     $merchantName.val(merchantNameVal);
     $amount.val(amountVal);
     if(merchantNameVal == '' || checkIfAmountIsInvalid(amountVal) || dateVal == '') {
@@ -239,7 +242,6 @@ function checkIfAmountIsInvalid(amountVal) {
 }
 
 function createTransaction(merchant, amount, date) {
-    console.log(amount)
     amount = (-1 * amount * 100).toString(); //Convert USD amount to Cents. -1 is multiplied to counteract the API issue
     var $transactionButton = $('.transactionInputForm button');
     $transactionButton.attr('disabled', true);
@@ -249,21 +251,28 @@ function createTransaction(merchant, amount, date) {
         url  : ENV_DATA['createTransactionEndpoint'],
         data : { merchant : merchant, amount : amount, date : date, authToken : userData['authToken'] },
         success: (response) => {  
-                    response = JSON.parse(response.substring(0, response.length-1));
-                    $transactionButton.attr('disabled', false);
-                    $transactionButton.html('Add');
-                    if(response['jsonCode'] != 200) {
-                        message = 'Unable to add transaction.';
-                        showTransactionFormError(message);
-                    } else {
-                        var data = {
-                            merchant: merchant,
-                            amount: (-1*parseFloat(amount)), //-1 is multiplied to get back the correct amount (as it as changed to counteract the API issue)
-                            created: date
+                    try {
+                        response = JSON.parse(response.substring(0, response.length-1));
+                        $transactionButton.attr('disabled', false);
+                        $transactionButton.html('Add');
+                        if(response['jsonCode'] != 200) {
+                            message = 'Unable to add transaction.';
+                            showTransactionFormError(message);
+                        } else {
+                            var data = {
+                                merchant: merchant,
+                                amount: (-1*parseFloat(amount)), //-1 is multiplied to get back the correct amount (as it as changed to counteract the API issue)
+                                created: date
+                            }
+                            addNewRowToTransactionTable(data);
+                            clearTransactionFields();
+                            closeNav();
                         }
-                        addNewRowToTransactionTable(data);
-                        clearTransactionFields();
-                        closeNav();
+                    } catch(ex) {
+                        $transactionButton.attr('disabled', false);
+                    $transactionButton.html('Add');
+                    var message = 'An error occured on the server';
+                    showTransactionFormError(message);
                     }
                 },
         error: (XMLHttpRequest, textStatus, errorThrown) => { 
