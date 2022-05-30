@@ -1,4 +1,4 @@
-# Expensify Take-Home Challenge
+# Ledger Take-Home Challenge
 
 ## Author/Developer Details 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;**Name:** Jerry Allan Akshay  
@@ -8,13 +8,13 @@
 
 
 ## Link to access the hosted website
-[Jerry Allan's Expensify Take-Home Project](https://jerry-expensify-website.herokuapp.com/)
+[Jerry Allan's Ledger Take-Home Project](https://jerry-expensify-website.herokuapp.com/)
 
 ## Steps to use the website
 1. Login using the following credentials:
-   1. Username: expensifytest@mailinator.com
-   2. Password: hire_me
-2. You can use any login credentials you like as long as it is stored on Expensify's server.
+   1. Username: jerryallan
+   2. Password: jerrypwd
+2. This is the only supported credentials as of the moment.
 3. Once you login, you'll have the option to logout too if you so desire. Once you logout, you cannot automatically log back in again as the authToken will be lost.
 4. If you don't logout, you can just refresh the page and it will take you right to the transaction page.
 5. The transaction page contains all of the transactions recorded by the user.
@@ -42,10 +42,6 @@
 1. The very first issue was the usage of PHP. I had never used PHP before, so I had to read up on the documentation. It was quite simple to grasp and very easy to use. I had no troubles later on with the usage of PHP.
 2. While creating the 404 page, I did face an issue where the web server didn't redirect the user to the right 404 error page. I had to search online and then figured out that the .htaccess file was required with the right configuration set in order for the 404 redirection to work.
 3. The third issue I came across was a relatively faster way to display the large table. I did look up online and came across this [link](https://howchoo.com/code/learn-the-slow-and-fast-way-to-append-elements-to-the-dom). The author of this blog had tried various approaches and concluded (with conclusive test results) that the fastest way to display a HTML table with a large dataset is to use the node (documentFragment) approach. I later used that same methodology in the webpage.
-4. One issue I came across while testing was that the Expensify API ```POST https://www.expensify.com/api?command=CreateTransaction``` made some errors in storing the transaction amount. The API stored the negative of the transaction amount for some reason. Since I don't have access to the Expensify servers (obviously), I used a correction parameter of -1 (transactionAmount * -1) on the client side while sending the data to the Expesify API.
-
-## Issues with the Expensify API
-1. The POST API ```POST https://www.expensify.com/api?command=CreateTransaction``` to create a transaction creates an entry with the negative of the amount. This issue needs to be fixed. 
 
 ## References
 1. [Markdown Reference](https://www.markdownguide.org/) 
