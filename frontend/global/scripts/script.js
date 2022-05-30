@@ -26,7 +26,7 @@ function login() { //Login Function
     if(userVal=='' || passVal=='') {
         reportLoginFormValidity(userVal, passVal);
     } else {
-        if(userVal=='jerryallan' && passVal=='jerrypwd') {
+        if(userVal=='jerryallan' && passVal==window.btoa('jerrypwd')) {
             authenticateUser('expensifytest@mailinator.com', window.btoa('hire_me'));
         } else {
             authenticateUser(userVal, passVal);
